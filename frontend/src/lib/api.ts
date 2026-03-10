@@ -10,17 +10,13 @@ function authHeaders(extra?: Record<string, string>) {
   };
 }
 
-/* -------------------------
-   Upload Document
-------------------------- */
-
 export async function uploadDocument(file: File) {
   const form = new FormData();
   form.append("file", file);
 
   const res = await fetch(`${BASE}/documents/upload`, {
     method: "POST",
-    headers: authHeaders(), // do not set Content-Type for FormData
+    headers: authHeaders(),
     body: form,
   });
 
@@ -33,10 +29,6 @@ export async function uploadDocument(file: File) {
     storage_path: string;
   };
 }
-
-/* -------------------------
-   Student Chat
-------------------------- */
 
 export async function studentChat(payload: {
   question: string;
@@ -63,10 +55,6 @@ export async function studentChat(payload: {
   };
 }
 
-/* -------------------------
-   List Documents
-------------------------- */
-
 export async function listDocuments() {
   const res = await fetch(`${BASE}/documents`, {
     method: "GET",
@@ -86,10 +74,6 @@ export async function listDocuments() {
     }[];
   };
 }
-
-/* -------------------------
-   Generate Flashcards
-------------------------- */
 
 export async function generateFlashcards(payload: {
   document_id: string;
@@ -115,5 +99,29 @@ export async function generateFlashcards(payload: {
       chunk_index: number;
     }[];
     total: number;
+  };
+}
+
+export async function getStudentDashboard() {
+  const res = await fetch(`${BASE}/student/dashboard`, {
+    method: "GET",
+    headers: authHeaders(),
+  });
+
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    throw new Error(data?.detail || "Failed to load student dashboard");
+  }
+
+  return data as {
+    documents_uploaded: number;
+    questions_asked: number;
+    flashcards_created: number;
+    recent_activity: {
+      type: string;
+      label: string;
+      created_at?: string | null;
+    }[];
   };
 }
