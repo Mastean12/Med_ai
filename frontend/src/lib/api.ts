@@ -1,9 +1,9 @@
-import { getToken } from "./auth";
+import { getAccessToken } from "./auth";
 
 const BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
 
-function authHeaders(extra?: Record<string, string>) {
-  const token = getToken();
+async function authHeaders(extra?: Record<string, string>) {
+  const token = await getAccessToken();
   return {
     ...(extra || {}),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -16,7 +16,7 @@ export async function uploadDocument(file: File) {
 
   const res = await fetch(`${BASE}/documents/upload`, {
     method: "POST",
-    headers: authHeaders(),
+    headers: await authHeaders(),
     body: form,
   });
 
@@ -34,10 +34,11 @@ export async function studentChat(payload: {
   question: string;
   document_id: string;
   top_k?: number;
+  use_llm?: boolean;
 }) {
   const res = await fetch(`${BASE}/student/chat`, {
     method: "POST",
-    headers: authHeaders({ "Content-Type": "application/json" }),
+    headers: await authHeaders({ "Content-Type": "application/json" }),
     body: JSON.stringify(payload),
   });
 
@@ -51,14 +52,14 @@ export async function studentChat(payload: {
       preview: string;
       similarity?: number;
     }[];
-    meta: Record<string, any>;
+    meta: Record<string, unknown>;
   };
 }
 
 export async function listDocuments() {
   const res = await fetch(`${BASE}/documents`, {
     method: "GET",
-    headers: authHeaders(),
+    headers: await authHeaders(),
   });
 
   const data = await res.json().catch(() => ({}));
@@ -81,7 +82,7 @@ export async function generateFlashcards(payload: {
 }) {
   const res = await fetch(`${BASE}/flashcards/generate`, {
     method: "POST",
-    headers: authHeaders({ "Content-Type": "application/json" }),
+    headers: await authHeaders({ "Content-Type": "application/json" }),
     body: JSON.stringify(payload),
   });
 
@@ -105,7 +106,7 @@ export async function generateFlashcards(payload: {
 export async function getStudentDashboard() {
   const res = await fetch(`${BASE}/student/dashboard`, {
     method: "GET",
-    headers: authHeaders(),
+    headers: await authHeaders(),
   });
 
   const data = await res.json().catch(() => ({}));
@@ -124,4 +125,16 @@ export async function getStudentDashboard() {
       created_at?: string | null;
     }[];
   };
+}
+
+export async function getStudyAnalytics() {
+  const res = await fetch(`${BASE}/student/analytics`, {
+    method: "GET",
+    headers: await authHeaders(),
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.detail || "Failed to load analytics");
+
+  return data;
 }

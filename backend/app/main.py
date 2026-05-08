@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.routers import flashcards
 
-from app.api.routers import documents, student, public, billing, test
+from app.api.routers import documents, student, public, billing, test, auth, tutor, notes, exam, adaptive
 
 app = FastAPI(title="Noctual AI Backend")
 
@@ -24,6 +24,11 @@ app.include_router(public.router, prefix="/public", tags=["Public"])
 app.include_router(billing.router, prefix="/billing", tags=["Billing"])
 app.include_router(test.router, prefix="/test", tags=["Test"])
 app.include_router(flashcards.router)
+app.include_router(auth.router)
+app.include_router(tutor.router)
+app.include_router(notes.router)
+app.include_router(exam.router)
+app.include_router(adaptive.router)
 
 
 @app.get("/")

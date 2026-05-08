@@ -6,6 +6,7 @@ class StudentChatIn(BaseModel):
     question: str
     document_id: str
     top_k: int = 5
+    use_llm: bool = True
 
 
 class SourceOut(BaseModel):
@@ -31,3 +32,39 @@ class StudentDashboardOut(BaseModel):
     questions_asked: int
     flashcards_created: int
     recent_activity: List[StudentActivityOut]
+
+
+# ---------- Analytics ----------
+
+class WeeklyActivityPoint(BaseModel):
+    activity_date: str
+    questions_count: int
+    flashcards_count: int
+
+
+class StreakInfo(BaseModel):
+    current_streak: int
+    longest_streak: int
+    is_active_today: bool
+
+
+class LifetimeTotals(BaseModel):
+    questions_asked: int
+    flashcards_saved: int
+    reviews_completed: int
+    study_sessions: int
+    total_study_minutes: int
+
+
+class PerformanceMetrics(BaseModel):
+    average_quality: Optional[float] = None
+    mastery_rate: Optional[float] = None
+    total_reviews: int
+
+
+class AnalyticsOut(BaseModel):
+    streak: StreakInfo
+    weekly_activity: List[WeeklyActivityPoint]
+    totals: LifetimeTotals
+    performance: PerformanceMetrics
+    recent_sessions: List[dict]
