@@ -21,7 +21,7 @@ function MainContent({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function StudentLayout({ children }: { children: React.ReactNode }) {
+export default function AccountLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <div className="flex">

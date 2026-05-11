@@ -347,6 +347,7 @@ async def generate_llm_response_streaming(
     *,
     temperature: float = 0.2,
     model: Optional[str] = None,
+    conversation: Optional[List[Dict[str, str]]] = None,
 ):
     """
     Streaming variant for real-time answer delivery.
@@ -368,12 +369,11 @@ async def generate_llm_response_streaming(
         "Content-Type": "application/json",
     }
 
+    messages = _build_messages(system_prompt, user_prompt, conversation)
+
     payload = {
         "model": model_name,
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ],
+        "messages": messages,
         "temperature": temperature,
         "stream": True,
     }

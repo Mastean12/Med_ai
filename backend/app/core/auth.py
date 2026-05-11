@@ -45,13 +45,10 @@ def get_current_user(
     """
     Validate JWT via Supabase and return user identity.
 
+    Retries once on timeout. Returns 401 on failure.
+
     Returns:
         {"id": str, "email": str, "role": str, "last_sign_in_at": str}
-
-    Raises:
-        401: Missing token
-        401: Invalid/expired token
-        401: Auth service unavailable
     """
     if not creds or not creds.credentials:
         raise HTTPException(
@@ -60,49 +57,45 @@ def get_current_user(
         )
 
     token = creds.credentials
-
     sb = supabase_anon()
-    try:
-        user_resp = sb.auth.get_user(token)
 
-        if not user_resp or not getattr(user_resp, "user", None):
-            raise HTTPException(
-                status_code=401,
-                detail="Invalid access token. Please log in again.",
-            )
+    for attempt in range(2):
+        try:
+            user_resp = sb.auth.get_user(token)
 
-        user = user_resp.user
+            if not user_resp or not getattr(user_resp, "user", None):
+                raise HTTPException(
+                    status_code=401,
+                    detail="Invalid access token. Please log in again.",
+                )
 
-        return {
-            "id": user.id,
-            "email": user.email,
-            "role": getattr(user, "role", "authenticated"),
-            "last_sign_in_at": (
-                getattr(user, "last_sign_in_at", None)
-            ),
-        }
-    except HTTPException:
-        raise
-    except Exception as e:
-        error_msg = str(e).lower()
+            user = user_resp.user
+            return {
+                "id": user.id,
+                "email": user.email,
+                "role": getattr(user, "role", "authenticated"),
+                "last_sign_in_at": getattr(user, "last_sign_in_at", None),
+            }
+        except HTTPException:
+            raise
+        except Exception as e:
+            error_msg = str(e).lower()
 
-        if "expired" in error_msg or "jwt expired" in error_msg:
-            raise HTTPException(
-                status_code=401,
-                detail="Access token has expired. Please refresh your session.",
-            )
+            if "expired" in error_msg or "jwt expired" in error_msg:
+                raise HTTPException(status_code=401, detail="Access token has expired. Please refresh your session.")
+            if "invalid" in error_msg or "malformed" in error_msg:
+                raise HTTPException(status_code=401, detail="Invalid access token format.")
 
-        if "invalid" in error_msg or "malformed" in error_msg:
-            raise HTTPException(
-                status_code=401,
-                detail="Invalid access token format.",
-            )
+            is_timeout = any(kw in error_msg for kw in ["timed out", "timeout", "timedout", "read operation"])
+            if is_timeout and attempt == 0:
+                logger.warning("Auth timeout on attempt 1, retrying...")
+                time.sleep(1)
+                continue
 
-        logger.error("Auth validation failed: %s", str(e)[:200])
-        raise HTTPException(
-            status_code=401,
-            detail="Unable to validate authentication. Please try again.",
-        )
+            logger.error("Auth validation failed: %s", str(e)[:200])
+            if is_timeout:
+                raise HTTPException(status_code=503, detail="Authentication service temporarily unavailable. Please try again.")
+            raise HTTPException(status_code=401, detail="Unable to validate authentication. Please try again.")
 
 
 def get_optional_user(

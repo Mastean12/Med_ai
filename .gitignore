@@ -1,16 +1,35 @@
-
 # Python
 __pycache__/
 *.pyc
 *.pyo
+*.egg-info/
+dist/
+build/
 
 # Virtual Environment
 venv/
+.venv/
+
+# Environment files (keep .env.example as a template)
 .env
+.env.local
+.env.production
+.env.development
+!/.env.example
 
-# VS Code
+# Node
+node_modules/
+.next/
+
+# IDE
 .vscode/
+.idea/
+*.swp
+*.swo
 
-# OS files
+# OS
 .DS_Store
 Thumbs.db
+
+# Logs
+*.log

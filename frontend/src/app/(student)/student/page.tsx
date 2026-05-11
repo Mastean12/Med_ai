@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
+import { useProfile } from "@/context/ProfileContext";
 import { getStudentDashboard, getStudyAnalytics } from "@/lib/api";
 import {
   FileText, MessageSquare, StickyNote, Activity,
@@ -50,6 +51,7 @@ const insights = [
 
 export default function StudentDashboard() {
   const { user, loading: authLoading } = useAuth();
+  const { displayName } = useProfile();
   const [data, setData] = useState<DashboardData | null>(null);
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -87,7 +89,6 @@ export default function StudentDashboard() {
     );
   }
 
-  const displayName = user.email?.split("@")[0] || "Student";
   const streak = analytics?.streak?.current_streak || 0;
   const today = new Date();
   const dateStr = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });

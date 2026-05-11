@@ -5,6 +5,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
+import { useProfile } from "@/context/ProfileContext";
+import { useSidebar } from "@/context/SidebarContext";
 import {
   LayoutDashboard, Upload, MessageSquare, Brain,
   StickyNote, PenTool, BarChart3, CreditCard,
@@ -31,7 +33,8 @@ export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, signOut } = useAuth();
-  const [collapsed, setCollapsed] = useState(false);
+  const { displayName } = useProfile();
+  const { collapsed, setCollapsed } = useSidebar();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
 
@@ -45,8 +48,6 @@ export function Sidebar() {
     if (href === "/student") return pathname === "/student";
     return pathname.startsWith(href);
   };
-
-  const displayName = user?.email?.split("@")[0] || "Student";
 
   const sidebarContent = (
     <div className="flex h-full flex-col">

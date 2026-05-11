@@ -50,7 +50,15 @@ async def create_checkout_session(
         )
 
     price_id = STRIPE_PRICES.get(plan, {}).get(billing_interval)
-    if not price_id or price_id.startswith("price_"):
+
+    # Dev mode — simulate checkout when Stripe isn't fully configured
+    if not price_id or not price_id.startswith("price_"):
+        if settings.ENV == "dev":
+            logger.info("DEV MODE: Simulating checkout for %s %s", plan.value, billing_interval)
+            return {
+                "checkout_url": f"{settings.APP_BASE_URL}/account/billing?dev_checkout=success&plan={plan.value}",
+                "session_id": f"dev_session_{user_id[:12]}",
+            }
         raise HTTPException(
             status_code=500,
             detail=f"Stripe Price ID not configured for {plan.value} {billing_interval}",
@@ -109,9 +117,9 @@ async def create_customer_portal(user_id: str) -> Dict[str, Any]:
     customer_id = sub.get("provider_customer_id")
 
     if not customer_id:
-        raise HTTPException(
-            status_code=404, detail="No Stripe customer found for your account"
-        )
+        if settings.ENV == "dev":
+            return {"portal_url": f"{settings.APP_BASE_URL}/account/billing?dev_portal=true"}
+        raise HTTPException(status_code=404, detail="No Stripe customer found for your account")
 
     if not settings.STRIPE_SECRET_KEY:
         raise HTTPException(status_code=501, detail="Stripe is not configured")

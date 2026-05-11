@@ -10,15 +10,14 @@ async def log_student_question(
     question: str,
 ) -> None:
     sb = supabase_admin()
-
     try:
         sb.table("student_questions").insert({
             "owner_id": user_id,
             "document_id": document_id,
             "question": question,
         }).execute()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to log student question: {e}")
+    except Exception:
+        pass
 
 
 async def get_student_dashboard(user_id: str) -> Dict[str, Any]:

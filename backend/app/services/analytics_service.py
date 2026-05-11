@@ -50,50 +50,50 @@ async def get_study_analytics(user_id: str) -> Dict[str, Any]:
 
 
 async def _compute_streak(sb, user_id: str) -> Dict[str, Any]:
-    """Compute current active-day streak."""
+    """Compute current active-day streak from all activity sources."""
     try:
-        questions_dates = (
-            sb.table("student_questions")
-            .select("created_at")
-            .eq("owner_id", user_id)
-            .order("created_at", desc=True)
-            .limit(365)
-            .execute()
-        )
-
-        reviews_dates = (
-            sb.table("flashcard_reviews")
-            .select("reviewed_at")
-            .eq("owner_id", user_id)
-            .order("reviewed_at", desc=True)
-            .limit(365)
-            .execute()
-        )
-
         active_dates = set()
 
-        for row in questions_dates.data or []:
-            dt = row.get("created_at")
-            if dt:
-                active_dates.add(_parse_date(dt).isoformat())
+        # Collect activity dates from all available tables
+        date_sources = [
+            ("student_questions", "created_at", "owner_id"),
+            ("documents", "created_at", "owner_id"),
+            ("chat_sessions", "created_at", "user_id"),
+            ("flashcard_reviews", "reviewed_at", "owner_id"),
+            ("flashcard_sessions", "created_at", "owner_id"),
+        ]
 
-        for row in reviews_dates.data or []:
-            dt = row.get("reviewed_at")
-            if dt:
-                active_dates.add(_parse_date(dt).isoformat())
+        for table, date_col, owner_col in date_sources:
+            try:
+                res = (
+                    sb.table(table)
+                    .select(date_col)
+                    .eq(owner_col, user_id)
+                    .order(date_col, desc=True)
+                    .limit(365)
+                    .execute()
+                )
+                for row in res.data or []:
+                    dt = row.get(date_col)
+                    if dt:
+                        active_dates.add(_parse_date(dt).isoformat())
+            except Exception:
+                continue
 
         if not active_dates:
             return {"current_streak": 0, "longest_streak": 0, "is_active_today": False}
 
         today = date.today()
-        yesterday = today - timedelta(days=1)
+        sorted_dates = sorted(active_dates, reverse=True)
 
+        # Count streak starting from today, going backwards
         current = 0
-        check = yesterday
+        check = today
         while check.isoformat() in active_dates:
             current += 1
             check -= timedelta(days=1)
 
+        # Compute longest streak
         all_dates = sorted(active_dates)
         longest = 0
         run = 0
@@ -110,8 +110,15 @@ async def _compute_streak(sb, user_id: str) -> Dict[str, Any]:
             prev = d
 
         is_active_today = today.isoformat() in active_dates
-        if is_active_today:
-            current += 1
+
+        return {
+            "current_streak": current,
+            "longest_streak": longest,
+            "is_active_today": is_active_today,
+        }
+    except Exception as e:
+        logger.warning("Streak computation failed: %s", str(e))
+        return {"current_streak": 0, "longest_streak": 0, "is_active_today": False}
 
         return {
             "current_streak": current,
@@ -193,7 +200,13 @@ async def _get_lifetime_totals(sb, user_id: str) -> Dict[str, Any]:
         }
     except Exception as e:
         logger.warning("Totals computation failed: %s", str(e))
-        return {}
+        return {
+            "questions_asked": 0,
+            "flashcards_saved": 0,
+            "reviews_completed": 0,
+            "study_sessions": 0,
+            "total_study_minutes": 0,
+        }
 
 
 async def _get_performance_metrics(sb, user_id: str) -> Dict[str, Any]:
@@ -224,7 +237,7 @@ async def _get_performance_metrics(sb, user_id: str) -> Dict[str, Any]:
         }
     except Exception as e:
         logger.warning("Performance metrics failed: %s", str(e))
-        return {}
+        return {"average_quality": None, "mastery_rate": None, "total_reviews": 0}
 
 
 async def _get_recent_sessions(sb, user_id: str) -> List[Dict[str, Any]]:

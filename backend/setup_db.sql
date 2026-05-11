@@ -1,15 +1,14 @@
--- Create users table if it doesn't exist
-CREATE TABLE IF NOT EXISTS public.users (
-  id UUID PRIMARY KEY,
-  email TEXT NOT NULL UNIQUE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+-- ============================================================
+-- Noctual AI — Core Database Setup
+-- ============================================================
+-- Run in Supabase SQL Editor.
+-- Creates core tables for document storage and chunking.
+-- ============================================================
 
--- Create documents table if it doesn't exist
+-- 1. DOCUMENTS — uploaded PDF records
 CREATE TABLE IF NOT EXISTS public.documents (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  owner_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  owner_id UUID NOT NULL,
   title TEXT NOT NULL,
   status TEXT DEFAULT 'uploaded',
   storage_path TEXT,
@@ -20,23 +19,17 @@ CREATE TABLE IF NOT EXISTS public.documents (
 -- Create doc_chunks table if it doesn't exist
 CREATE TABLE IF NOT EXISTS public.doc_chunks (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  owner_id UUID NOT NULL,
   document_id UUID NOT NULL REFERENCES public.documents(id) ON DELETE CASCADE,
   chunk_index INT NOT NULL,
-  content TEXT NOT NULL,
+  chunk_text TEXT NOT NULL,
+  embedding vector(384),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Enable RLS and set up basic policies
-ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.doc_chunks ENABLE ROW LEVEL SECURITY;
-
--- Allow anon key to insert/select users
-CREATE POLICY "Allow anon to insert users" ON public.users
-  FOR INSERT WITH CHECK (true);
-
-CREATE POLICY "Allow anon to select users" ON public.users
-  FOR SELECT USING (true);
 
 -- Allow anon key to insert/select documents
 CREATE POLICY "Allow anon to insert documents" ON public.documents

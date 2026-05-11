@@ -38,15 +38,15 @@ class Feature(str, Enum):
     CLINICAL_SIMULATIONS = "clinical_simulations"
 
 
-# Pricing (USD cents for Stripe — monthly)
+# Pricing (Stripe Price IDs — replace with actual IDs from Stripe Dashboard)
 STRIPE_PRICES = {
     PlanTier.PRO: {
-        "monthly": "price_pro_monthly",    # Replace with actual Stripe Price ID
-        "yearly": "price_pro_yearly",       # Replace with actual Stripe Price ID
+        "monthly": "",  # Set from Stripe Dashboard
+        "yearly": "",    # Set from Stripe Dashboard
     },
     PlanTier.PREMIUM: {
-        "monthly": "price_premium_monthly",
-        "yearly": "price_premium_yearly",
+        "monthly": "",
+        "yearly": "",
     },
 }
 
@@ -63,9 +63,9 @@ PLAN_LIMITS: Dict[PlanTier, Dict[Feature, int]] = {
         Feature.AI_QUESTIONS: 20,
         Feature.FLASHCARDS_GENERATED: 10,
         Feature.UPLOADS: 3,
-        Feature.TUTORING_SESSIONS: 0,
+        Feature.TUTORING_SESSIONS: 5,
         Feature.SUMMARIES_GENERATED: 3,
-        Feature.EXAM_SESSIONS: 0,
+        Feature.EXAM_SESSIONS: 2,
         Feature.CLINICAL_SIMULATIONS: 0,
     },
     PlanTier.PRO: {
