@@ -132,6 +132,23 @@ export default function TutorPage() {
         for (const line of lines) {
           if (line.startsWith("data: ") && line !== "data: [DONE]") {
             const text = line.slice(6);
+
+            if (text.startsWith("__SECTIONS__:")) {
+              const sectionsJson = text.slice("__SECTIONS__:".length);
+              try {
+                const sections = JSON.parse(sectionsJson);
+                setMessages((m) => {
+                  const copy = [...m];
+                  const last = copy[copy.length - 1];
+                  if (last?.role === "assistant") {
+                    last.formatted_sections = sections;
+                  }
+                  return [...copy];
+                });
+              } catch { /* ignore parse errors */ }
+              continue;
+            }
+
             fullResponse += text;
             setMessages((m) => {
               const copy = [...m];

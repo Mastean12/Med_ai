@@ -69,6 +69,16 @@ function MarkdownContent({ text, className = "" }: { text: string; className?: s
   );
 }
 
+type BackendSection = {
+  title: string;
+  type: string;
+  content: string[];
+  icon: string;
+  bg: string;
+  border: string;
+  priority: number;
+};
+
 function QuizBlock({ question, options, correct }: { question: string; options: string[]; correct?: string }) {
   const [selected, setSelected] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
@@ -143,26 +153,43 @@ function CollapsibleSection({ heading, level, body }: Section) {
       )}
       {open && (
         <div className={`px-4 pb-4 ${!heading ? "pt-4" : "pt-0"}`}>
-          <div className="space-y-2">
-            {body.map((line, j) => {
-              // Auto-detect quiz blocks: lines starting with "Q: " followed by options
-              const quizMatch = line.match(/^(?:Q:?\s+)(.+?)(?:\s*Options?:\s*)(.+)/i);
-              if (quizMatch) {
-                const question = quizMatch[1];
-                const opts = quizMatch[2].split(/[,;]\s*/).filter(Boolean);
-                return <QuizBlock key={j} question={question} options={opts} />;
-              }
-              return <MarkdownContent key={j} text={line} className={style.textClass || ""} />;
-            })}
-          </div>
+          <MarkdownContent text={body.join("\n")} className={style.textClass || ""} />
         </div>
       )}
     </div>
   );
 }
 
-export default function ResponseCard({ content, className = "" }: { content?: string; className?: string }) {
+export default function ResponseCard({ content, formattedSections, className = "" }: { content?: string; formattedSections?: BackendSection[]; className?: string }) {
   if (!content) return null;
+
+  // Use backend-formatted sections when available
+  if (formattedSections && formattedSections.length > 0) {
+    return (
+      <div className={`space-y-3 ${className}`}>
+        {formattedSections.map((s, i) => {
+          const style = matchStyle(s.title);
+          const Icon = style.icon;
+          return (
+            <div key={i} className={`rounded-xl ${s.bg || style.bg} ${s.border || style.border} overflow-hidden`}>
+              {s.title && (
+                <div className="flex items-center gap-2.5 px-4 py-3">
+                  <Icon className={`h-4 w-4 shrink-0 ${style.iconColor}`} />
+                  <span className="flex-1 font-semibold text-sm tracking-tight text-surface-700">
+                    {s.title}
+                  </span>
+                </div>
+              )}
+              <div className={`px-4 pb-4 ${!s.title ? "pt-4" : "pt-0"}`}>
+                <MarkdownContent text={s.content.join("\n")} className={style.textClass || ""} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
   const { preamble, sections } = parseSections(content);
 
   if (!preamble && sections.length === 1 && !sections[0].heading) {

@@ -7,6 +7,7 @@ All responses use structured sections with tags, active recall questions,
 and visual separators. No walls of text.
 """
 
+import json
 import logging
 from typing import Dict, Any, List, Optional
 from datetime import datetime, timezone
@@ -414,6 +415,8 @@ async def tutor_chat_streaming(
             sb.table("chat_messages").insert({"session_id":session_id,"role":"assistant","content":full}).execute()
             sb.table("chat_sessions").update({"updated_at":datetime.now(timezone.utc).isoformat()}).eq("id",session_id).execute()
         except: pass
+
+        yield f"__SECTIONS__:{json.dumps(formatted.get('sections', []))}"
 
     except HTTPException as e:
         yield f"Error: {e.detail if e.detail else 'Service unavailable'}"

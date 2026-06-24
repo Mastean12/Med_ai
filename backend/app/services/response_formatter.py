@@ -135,17 +135,7 @@ def _detect_section_type(heading: str) -> Optional[tuple[str, Dict[str, Any]]]:
     }
 
 
-def _clean_markdown_line(line: str) -> str:
-    """
-    Remove markdown formatting but preserve structure.
-    Converts **text** to text, *text* to text, but preserves bullets and numbers.
-    """
-    # Remove bold **text** -> text
-    line = re.sub(r"\*\*(.+?)\*\*", r"\1", line)
-    # Remove italic *text* -> text
-    line = re.sub(r"\*(.+?)\*", r"\1", line)
-    # Remove inline code `text` -> text (keep backticks for now, let frontend handle)
-    # line = re.sub(r"`([^`]+)`", r"\1", line)
+def _clean_line(line: str) -> str:
     return line.strip()
 
 
@@ -182,7 +172,7 @@ def _parse_sections(text: str) -> tuple[Optional[str], List[FormattedSection]]:
             body_raw = trimmed[body_start:].strip()
 
             # Split body into lines, filter empty ones
-            body_lines = [_clean_markdown_line(l) for l in body_raw.split("\n")]
+            body_lines = [_clean_line(l) for l in body_raw.split("\n")]
             body_lines = [l for l in body_lines if l]
 
             if body_lines or heading_text:  # Allow empty-body sections with headings
@@ -201,11 +191,11 @@ def _parse_sections(text: str) -> tuple[Optional[str], List[FormattedSection]]:
         else:
             # This is preamble text (before first heading)
             if not preamble:
-                preamble = _clean_markdown_line(trimmed) if trimmed else None
+                preamble = _clean_line(trimmed) if trimmed else None
 
     # If no sections were found, treat entire text as a single section
     if not sections and text.strip():
-        body_lines = [_clean_markdown_line(l) for l in text.split("\n")]
+        body_lines = [_clean_line(l) for l in text.split("\n")]
         body_lines = [l for l in body_lines if l]
         if body_lines:
             section = FormattedSection(
@@ -278,7 +268,7 @@ def format_response(raw_text: str) -> Dict[str, Any]:
                 {
                     "title": "",
                     "type": "generic",
-                    "content": [_clean_markdown_line(l) for l in raw_text.split("\n") if l.strip()],
+                    "content": [_clean_line(l) for l in raw_text.split("\n") if l.strip()],
                     "icon": "📝",
                     "bg": "bg-white",
                     "border": "border-l-[3px] border-surface-200",
