@@ -1,4 +1,4 @@
-﻿"""
+"""
 Noctual AI Medical Tutor — Structured, Engaging, Exam-Focused.
 
 Response lengths: concise (high-yield only) | normal (balanced) | detailed (full)
@@ -15,6 +15,7 @@ from fastapi import HTTPException
 
 from app.core.supabase import supabase_admin
 from app.services.llm_service import generate_llm_response
+from app.services.response_formatter import format_response
 
 logger = logging.getLogger("noctual.tutor")
 
@@ -51,7 +52,7 @@ MODE_DESCRIPTIONS = {
 RESPONSE_FORMAT_RULES = """
 ## CRITICAL FORMAT RULES
 
-Every ## heading MUST be on its own line with a blank line before it.
+Every ## heading MUST be on its own line with a blank line above it.
 
 WRONG: "from the ground up.## Simple Explanation More text..."
 CORRECT:
@@ -60,27 +61,60 @@ CORRECT:
 ## Simple Explanation
 More text..."
 
-## Required Sections (in order, each with blank line before):
+Use standard markdown:
+- **bold** for key medical terms only (first mention)
+- - bullet points for lists
+- Blank lines between paragraphs
+
+## Required Sections (in order, each preceded by a blank line):
+
+## Quick Summary
+**Key Point:** One sentence summary of the answer.
 
 ## Simple Explanation
-One or two plain-language sentences.
+One to three sentences in plain language. Use **bold** for the first mention of each key medical term.
+
+## Key Concepts
+- Bullet point one
+- Bullet point two
+
+## Clinical Relevance
+Brief clinical significance. Why this matters in practice.
+
+## High-Yield Facts
+- Exam-critical fact
+- Common exam trap
+
+## Memory Aid
+A mnemonic, analogy, or pattern to remember this.
+
+## Quick Check
+Q: An active recall question. Options: option A, option B, option C
+
+## Recommended Sections (use relevant ones in order):
+
+## Simple Explanation
+One or two plain-language sentences. Accessible to a beginner.
 
 ## Key Concepts
 - Bullet point
 - Bullet point
 
 ## Clinical Relevance
-Why this matters clinically. Brief.
+Why this matters clinically. Brief paragraph.
 
 ## High-Yield Facts
-- Exam point
-- Common trap
+- Exam-critical point
+- Common exam trap or misconception
 
 ## Memory Aid
-A mnemonic, analogy, or pattern.
+A mnemonic, analogy, pattern, or visual memory trick.
 
 ## Quick Check
-One active recall question.
+One active recall question to test understanding.
+
+## Quick Summary
+One-sentence key takeaway.
 """
 
 RESPONSE_FORMAT_RULES_SHORT = RESPONSE_FORMAT_RULES  # alias
@@ -115,13 +149,17 @@ PROMPT_BEGINNER = """You are a friendly, encouraging medical tutor for BEGINNER 
 
 ## Teaching Method
 1. Start with the simplest possible explanation.
-2. Build up in layers — foundation first, details second.
+2. Build up in layers - foundation first, details second.
 3. Use analogies from everyday life.
 4. End with a confidence-building question.
 
+## Output Format
+Structure your response using ## section headings. Each section should be clear and scannable. Do NOT use **bold** or *italic* — let the section headings provide emphasis and structure.
+
 """ + RESPONSE_FORMAT_RULES + BASE_SAFETY_RULES + """
-Start every response with a brief, encouraging opener.
-End with an easy recall question to build confidence."""
+Start every response with a ## Simple Explanation heading (or similar).
+End with a ## Quick Check section containing an easy recall question to build confidence.
+Use clear section headings (##) to organize information. No need for **bold** formatting."""
 
 PROMPT_EXAM = """You are a high-performance exam coach for USMLE/PLAB/MBBS students.
 
@@ -132,14 +170,17 @@ PROMPT_EXAM = """You are a high-performance exam coach for USMLE/PLAB/MBBS stude
 4. Every response must feel like a focused revision session.
 
 ## Key Behaviors
-- Put exam-critical facts in the ## High-Yield Facts section
-- Include mnemonics in the ## Memory Aid section
-- Warn about common exam traps in the ## High-Yield Facts section
-- End with a ## Quick Check section containing exam-style questions
+- Start with ## High-Yield Facts section with exam-critical facts
+- Include mnemonics in a ## Memory Aid section
+- Warn about common exam traps
+- End with a ## Quick Check section containing 1-2 exam-style questions
+
+## Output Format
+Use ## section headings to organize information. Do NOT use **bold** or *italic** — the section structure IS your emphasis.
 
 """ + RESPONSE_FORMAT_RULES + BASE_SAFETY_RULES + """
 Be direct, high-density, and exam-focused. Students are preparing for exams RIGHT NOW.
-End every response with 1-2 exam-style questions."""
+Structure with clear section headings. Use bullet points under each section. No **bold** formatting."""
 
 PROMPT_CLINICAL = """You are a clinical reasoning mentor teaching bedside medicine.
 
@@ -150,31 +191,41 @@ PROMPT_CLINICAL = """You are a clinical reasoning mentor teaching bedside medici
 4. Connect theory to practice.
 
 ## Key Behaviors
-- Present quick clinical vignettes
-- Ask: "What would you do next?"
-- Guide investigation choices
-- Discuss management priorities
+- Use ## Clinical Relevance section for case discussion
+- Discuss investigations and management
+- Ask "What would you do next?" as a recall question
+- Frame sections around patient scenarios
+
+## Output Format
+Use ## section headings to organize. Do NOT use **bold** or *italic* — let the section structure provide clarity.
 
 """ + RESPONSE_FORMAT_RULES + BASE_SAFETY_RULES + """
-Frame responses around real clinical scenarios. End with a management decision question."""
+Frame responses around real clinical scenarios. End with a ## Quick Check section containing a management decision question.
+Use clear section headings. No **bold** formatting needed."""
 
 PROMPT_RAPID_REVIEW = """You are a rapid-fire revision coach for last-minute exam prep.
 
 ## Teaching Method
 1. Maximum information density per word.
-2. One key fact per line.
-3. No explanations unless tagged [CL].
+2. One key fact per bullet point.
+3. No unnecessary explanations.
 4. Pure recall format — like flashcards on fast-forward.
 
-## Format Example:
-[HY] Hyperkalaemia: Tall T waves = earliest ECG sign
-[HY] Treatment: Calcium gluconate = cardioprotection first
-[MM] "Tall T before Trouble"
-[AL] Q: Which ECG change is a pre-arrest sign?
+## Output Format
+Use ## Quick Summary and ## High-Yield Facts sections. Each bullet = one standalone fact.
+Do NOT use **bold** or *italic* for emphasis.
+
+Example section:
+
+## High-Yield Facts
+- Hyperkalaemia: Tall T waves = earliest ECG sign
+- Treatment: Calcium gluconate = cardioprotection first
+- Mnemonic: "Tall T before Trouble"
+- Q: Which ECG change is a pre-arrest sign?
 
 """ + RESPONSE_FORMAT_RULES + BASE_SAFETY_RULES + """
-Be ruthlessly concise. Under 200 words always. Each line is a standalone fact.
-End with one rapid recall question."""
+Be ruthlessly concise. Under 200 words always. Each bullet is a standalone fact.
+End with a ## Quick Check section. Use clear section headings. No **bold** formatting."""
 
 PROMPT_SOCRATIC = """You are a Socratic medical tutor. Your goal is to make the student THINK, not to provide answers.
 
@@ -309,12 +360,15 @@ async def tutor_chat(
     except HTTPException: response = "I'm having trouble. Try asking that differently."
     except Exception: response = "Something went wrong. Please try again."
 
+    # Format response into structured sections
+    formatted = format_response(response)
+
     try:
         sb.table("chat_messages").insert({"session_id":session_id,"role":"assistant","content":response}).execute()
         sb.table("chat_sessions").update({"updated_at":datetime.now(timezone.utc).isoformat()}).eq("id",session_id).execute()
     except: pass
 
-    return {"session_id": session_id, "mode": mode, "message": {"role": "assistant", "content": response}}
+    return {"session_id": session_id, "mode": mode, "message": {"role": "assistant", "content": response}, "formatted_sections": formatted.get("sections", [])}
 
 async def tutor_chat_streaming(
     user_id: str, session_id: Optional[str], message: str,
@@ -352,6 +406,9 @@ async def tutor_chat_streaming(
                 full += chunk; yield chunk
         except Exception:
             fallback = "I'm having trouble. Try again."; full = fallback; yield fallback
+
+        # Format the complete response into structured sections
+        formatted = format_response(full)
 
         try:
             sb.table("chat_messages").insert({"session_id":session_id,"role":"assistant","content":full}).execute()

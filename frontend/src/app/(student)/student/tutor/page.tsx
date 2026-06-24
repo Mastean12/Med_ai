@@ -10,12 +10,12 @@ import {
   Zap, HelpCircle, ChevronDown, Sparkles,
   FileText, X, PanelLeft, PanelRight,
 } from "lucide-react";
-import TutorMessage from "@/components/TutorMessage";
+import ResponseCard from "@/components/ResponseCard";
 
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
 
 type Session = { id: string; title: string; mode: string; created_at: string; updated_at: string };
-type Message = { role: string; content: string };
+type Message = { role: string; content: string; formatted_sections?: any[] };
 type Mode = { id: string; label: string; description: string };
 type DocRow = { id: string; title: string };
 
@@ -348,7 +348,7 @@ export default function TutorPage() {
                 ) : (
                   <div className="max-w-[85%]">
                     <div className="rounded-2xl rounded-bl-md border border-surface-200 bg-white px-6 py-5 shadow-sm">
-                      <TutorMessage content={m.content} />
+                      <ResponseCard content={m.content} formattedSections={m.formatted_sections} />
                     </div>
                     {m.content === "" && streaming && (
                       <div className="flex items-center gap-2 ml-4 mt-2">

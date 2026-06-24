@@ -18,6 +18,12 @@ class SourceOut(BaseModel):
 class StudentChatOut(BaseModel):
     answer: str
     sources: List[SourceOut]
+    response_type: Optional[str] = None
+    response_badge: Optional[str] = None
+    confidence: Optional[float] = None
+    confidence_level: Optional[str] = None
+    related_questions: Optional[List[str]] = None
+    formatted_sections: Optional[List[Dict[str, Any]]] = None
     meta: Optional[Dict[str, Any]] = None
 
 
