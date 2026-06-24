@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { Suspense, useEffect, useState, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -33,7 +33,15 @@ const SECTIONS = [
   { id: "privacy", label: "Privacy", icon: AlertTriangle },
 ] as const;
 
-export default function SettingsPage() {
+export default function SettingsPageWrapper() {
+  return (
+    <Suspense fallback={<LoadingSkeleton />}>
+      <SettingsPage />
+    </Suspense>
+  );
+}
+
+function SettingsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, signOut } = useAuth();
