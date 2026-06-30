@@ -10,9 +10,8 @@ import {
   Zap, HelpCircle, ChevronDown, Sparkles,
   FileText, X, PanelLeft, PanelRight,
 } from "lucide-react";
+import { API_BASE_URL } from "@/lib/apiClient";
 import ResponseCard from "@/components/ResponseCard";
-
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
 
 type Session = { id: string; title: string; mode: string; created_at: string; updated_at: string };
 type Message = { role: string; content: string; formatted_sections?: any[] };
@@ -58,7 +57,7 @@ export default function TutorPage() {
 
   const loadModes = useCallback(async () => {
     try {
-      const res = await fetch(`${BACKEND}/tutor/modes`);
+      const res = await fetch(`${API_BASE_URL}/tutor/modes`);
       if (res.ok) setModes((await res.json()).modes || []);
     } catch {}
   }, []);
@@ -67,7 +66,7 @@ export default function TutorPage() {
     const token = await getToken();
     if (!token) return;
     try {
-      const res = await fetch(`${BACKEND}/tutor/sessions`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE_URL}/tutor/sessions`, { headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) setSessions((await res.json()).sessions || []);
     } catch {}
   }, []);
@@ -76,7 +75,7 @@ export default function TutorPage() {
     const token = await getToken();
     if (!token) return;
     try {
-      const res = await fetch(`${BACKEND}/tutor/session/${sid}`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE_URL}/tutor/session/${sid}`, { headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) {
         const data = await res.json();
         setMessages(data.messages || []);
@@ -90,7 +89,7 @@ export default function TutorPage() {
     const token = await getToken();
     if (!token) return;
     try {
-      const res = await fetch(`${BACKEND}/documents`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE_URL}/documents`, { headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) setDocuments((await res.json()).documents || []);
     } catch {}
   }, []);
@@ -109,7 +108,7 @@ export default function TutorPage() {
 
     try {
       const token = await getToken();
-      const res = await fetch(`${BACKEND}/tutor/chat`, {
+      const res = await fetch(`${API_BASE_URL}/tutor/chat`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify({ message: msg, session_id: sessionId, mode, document_id: documentId || undefined, stream: true }),
@@ -166,7 +165,7 @@ export default function TutorPage() {
         loadSessions();
         const token2 = await getToken();
         if (token2) {
-          const sessionsRes = await fetch(`${BACKEND}/tutor/sessions`, { headers: { Authorization: `Bearer ${token2}` } });
+          const sessionsRes = await fetch(`${API_BASE_URL}/tutor/sessions`, { headers: { Authorization: `Bearer ${token2}` } });
           if (sessionsRes.ok) {
             const data = await sessionsRes.json();
             if (data.sessions?.length > 0) setSessionId(data.sessions[0].id);
@@ -186,7 +185,7 @@ export default function TutorPage() {
     const token = await getToken();
     if (!token) return;
     try {
-      await fetch(`${BACKEND}/tutor/session/${sid}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
+      await fetch(`${API_BASE_URL}/tutor/session/${sid}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
       setSessions((s) => s.filter((s) => s.id !== sid));
       if (sessionId === sid) newSession();
     } catch {}

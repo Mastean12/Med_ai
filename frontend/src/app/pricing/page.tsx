@@ -9,7 +9,7 @@ import {
   Infinity, BookOpen, Brain, PenTool, BarChart3, Upload,
 } from "lucide-react";
 
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
+import { API_BASE_URL } from "@/lib/apiClient";
 
 const plans = [
   {
@@ -79,7 +79,7 @@ export default function PricingPage() {
     (async () => {
       try {
         const token = await getToken();
-        const res = await fetch(`${BACKEND}/billing/usage`, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await fetch(`${API_BASE_URL}/billing/usage`, { headers: { Authorization: `Bearer ${token}` } });
         if (res.ok) {
           const d = await res.json();
           const features: Record<string, { used: number; limit: number | null }> = {};
@@ -98,7 +98,7 @@ export default function PricingPage() {
     try {
       const token = await getToken();
       if (!token) { window.location.href = "/login?redirect=pricing"; return; }
-      const res = await fetch(`${BACKEND}/billing/create-checkout`, {
+      const res = await fetch(`${API_BASE_URL}/billing/create-checkout`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify({ plan, billing_interval: billing }),

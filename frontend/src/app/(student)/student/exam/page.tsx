@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import { PenTool, Clock, Target, TrendingUp, ChevronRight, BarChart3, Sparkles, Play, BookOpen, Zap, Brain, HelpCircle, Check, X, Heart } from "lucide-react";
 
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
+import { API_BASE_URL } from "@/lib/apiClient";
 
 type Question = { id: string; question: string; option_a: string; option_b: string; option_c: string; option_d: string };
 type Result = { attempt_id: string; score: number; correct: number; total: number; topic_breakdown?: Record<string, { correct: number; total: number; pct: number }>; results: { question_id: string; your_answer: string; correct_answer: string; is_correct: boolean; explanation: string; topic?: string }[] };
@@ -50,7 +50,7 @@ export default function ExamPage() {
   const fetchDashboard = async () => {
     try {
       const token = await getToken();
-      const res = await fetch(`${BACKEND}/exam/dashboard`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE_URL}/exam/dashboard`, { headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) setDashboard(await res.json());
     } catch {}
   };
@@ -60,7 +60,7 @@ export default function ExamPage() {
     setResult(null); setAnswers({}); setCurrentQ(0);
     try {
       const token = await getToken();
-      const res = await fetch(`${BACKEND}/exam/generate`, {
+      const res = await fetch(`${API_BASE_URL}/exam/generate`, {
         method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify({ count: questionCount, exam_mode: selectedMode, topic: selectedTopic || undefined, difficulty: "mixed" }),
       });
@@ -77,7 +77,7 @@ export default function ExamPage() {
     setLoading(true);
     try {
       const token = await getToken();
-      const res = await fetch(`${BACKEND}/exam/submit`, {
+      const res = await fetch(`${API_BASE_URL}/exam/submit`, {
         method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify({ attempt_id: attemptId, answers: Object.entries(answers).map(([q,a]) => ({ question_id: q, answer: a })) }),
       });

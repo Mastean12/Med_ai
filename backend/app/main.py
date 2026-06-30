@@ -1,3 +1,4 @@
+import re
 import logging
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,9 +20,23 @@ app = FastAPI(
     redoc_url=None,
 )
 
+# Expand wildcard origins (*.vercel.app) into a regex pattern
+cors_list = [o.strip() for o in CORS_ORIGINS.split(",")]
+cors_regex_patterns = []
+static_origins = []
+for origin in cors_list:
+    if "*." in origin:
+        escaped = re.escape(origin).replace(r"\*\.", r"[a-zA-Z0-9\-]+.")
+        cors_regex_patterns.append(escaped)
+    else:
+        static_origins.append(origin)
+
+cors_regex = "|".join(cors_regex_patterns) if cors_regex_patterns else None
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[o.strip() for o in CORS_ORIGINS.split(",")],
+    allow_origins=static_origins,
+    allow_origin_regex=cors_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

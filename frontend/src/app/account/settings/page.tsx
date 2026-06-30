@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { SettingsCard, FieldInput, ToggleSwitch, SelectField, LoadingSkeleton } from "@/components/SettingsCard";
 
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
+import { API_BASE_URL } from "@/lib/apiClient";
 
 const TUTOR_MODES = [
   { id: "beginner", label: "Beginner", icon: BookOpen },
@@ -150,7 +150,7 @@ function SettingsPage() {
         notif_billing: notifBilling,
       };
       const results = await Promise.allSettled([
-        fetch(`${BACKEND}/settings/profile`, {
+        fetch(`${API_BASE_URL}/settings/profile`, {
           method: "PUT",
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -158,7 +158,7 @@ function SettingsPage() {
             country: country, learning_level: learningLevel,
           }),
         }),
-        fetch(`${BACKEND}/settings/preferences`, {
+        fetch(`${API_BASE_URL}/settings/preferences`, {
           method: "PUT",
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
           body: JSON.stringify(prefsPayload),
@@ -183,7 +183,7 @@ function SettingsPage() {
     setSendingReset(true); setResetSent(false); setError("");
     try {
       const token = await getToken();
-      const res = await fetch(`${BACKEND}/settings/reset-password`, {
+      const res = await fetch(`${API_BASE_URL}/settings/reset-password`, {
         method: "POST", headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) setResetSent(true);
@@ -196,7 +196,7 @@ function SettingsPage() {
     setDeleting(true); setError("");
     try {
       const token = await getToken();
-      const res = await fetch(`${BACKEND}/settings/account`, {
+      const res = await fetch(`${API_BASE_URL}/settings/account`, {
         method: "DELETE", headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) { await signOut(); }
@@ -209,7 +209,7 @@ function SettingsPage() {
     setExporting(true); setError(""); setExportUrl(null);
     try {
       const token = await getToken();
-      const res = await fetch(`${BACKEND}/settings/export`, {
+      const res = await fetch(`${API_BASE_URL}/settings/export`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
+import { API_BASE_URL } from "@/lib/apiClient";
 
 export default function SymptomCheckerPage() {
   const [symptoms, setSymptoms] = useState("");
@@ -16,7 +16,7 @@ export default function SymptomCheckerPage() {
     setError("");
     setLoading(true);
     try {
-      const res = await fetch(`${BACKEND}/public/symptom-check`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ symptoms: symptoms.trim() }) });
+      const res = await fetch(`${API_BASE_URL}/public/symptom-check`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ symptoms: symptoms.trim() }) });
       const data = await res.json();
       setResponse(data.message || "");
       setDisclaimer(data.disclaimer || "");

@@ -31,7 +31,7 @@ const ProfileContext = createContext<ProfileContextType>({
   refreshProfile: async () => {},
 });
 
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
+import { API_BASE_URL } from "@/lib/apiClient";
 
 export function ProfileProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
@@ -43,7 +43,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     try {
       const token = await getToken();
       if (!token) return;
-      const res = await fetch(`${BACKEND}/settings/profile`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE_URL}/settings/profile`, { headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) {
         const data = await res.json();
         const p = data.profile || {};

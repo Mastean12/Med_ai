@@ -10,7 +10,7 @@ import {
   BadgeCheck, BarChart3,
 } from "lucide-react";
 
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
+import { API_BASE_URL } from "@/lib/apiClient";
 
 type Subscription = { plan: string; status: string; provider: string | null; current_period_end: string | null; cancel_at_period_end: boolean };
 type UsageSummary = { plan: string; period: string; features: Record<string, { used: number; limit: number | null; unlimited: boolean; remaining: number | null }> };
@@ -30,8 +30,8 @@ export default function BillingPage() {
         const token = await getToken();
         const h = { Authorization: `Bearer ${token}`, "Content-Type": "application/json" };
         const [s, u] = await Promise.all([
-          fetch(`${BACKEND}/billing/subscription`, { headers: h }).then(r => r.ok ? r.json() : null),
-          fetch(`${BACKEND}/billing/usage`, { headers: h }).then(r => r.ok ? r.json() : null),
+          fetch(`${API_BASE_URL}/billing/subscription`, { headers: h }).then(r => r.ok ? r.json() : null),
+          fetch(`${API_BASE_URL}/billing/usage`, { headers: h }).then(r => r.ok ? r.json() : null),
         ]);
         setSub(s); setUsage(u);
       } catch {} finally { setLoading(false); }
@@ -42,7 +42,7 @@ export default function BillingPage() {
     setActionLoading("portal"); setError("");
     try {
       const token = await getToken();
-      const res = await fetch(`${BACKEND}/billing/customer-portal`, { method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } });
+      const res = await fetch(`${API_BASE_URL}/billing/customer-portal`, { method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } });
       const data = await res.json();
       if (data.portal_url) window.location.href = data.portal_url;
       else setError("Could not open billing portal.");
@@ -54,7 +54,7 @@ export default function BillingPage() {
     setActionLoading("cancel"); setError("");
     try {
       const token = await getToken();
-      const res = await fetch(`${BACKEND}/billing/cancel`, { method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } });
+      const res = await fetch(`${API_BASE_URL}/billing/cancel`, { method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } });
       if (res.ok) setSub((s) => s ? { ...s, cancel_at_period_end: true } : s);
       else setError((await res.json()).detail || "Failed.");
     } catch { setError("Failed."); } finally { setActionLoading(null); }

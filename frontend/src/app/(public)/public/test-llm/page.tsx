@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
+import { API_BASE_URL } from "@/lib/apiClient";
 
 export default function TestLLMPage() {
   const [result, setResult] = useState<Record<string, unknown> | null>(null);
@@ -11,7 +11,7 @@ export default function TestLLMPage() {
   const testLLM = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${BACKEND}/test/llm`, { method: "POST", headers: { "Content-Type": "application/json" } });
+      const response = await fetch(`${API_BASE_URL}/test/llm`, { method: "POST", headers: { "Content-Type": "application/json" } });
       const data = await response.json();
       setResult(data);
     } catch (error: unknown) {

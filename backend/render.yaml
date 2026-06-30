@@ -28,11 +28,11 @@ services:
       - key: STRIPE_PUBLISHABLE_KEY
         sync: false
       - key: APP_BASE_URL
-        value: https://noctual.vercel.app
+        value: https://med-ai-indol.vercel.app
       - key: BACKEND_BASE_URL
         sync: false
       - key: FREE_DAILY_AI_LIMIT
         value: 10
       - key: CORS_ORIGINS
-        value: https://noctual.vercel.app,https://noctual-git-main.vercel.app
+        value: https://med-ai-indol.vercel.app,http://localhost:3000,https://*.vercel.app
 healthCheckPath: /health

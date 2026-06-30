@@ -1,33 +1,13 @@
-import { getAccessToken } from "./auth";
-
-const BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
-
-async function authHeaders(extra?: Record<string, string>) {
-  const token = await getAccessToken();
-  return {
-    ...(extra || {}),
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
-}
+import { api } from "./apiClient";
 
 export async function uploadDocument(file: File) {
   const form = new FormData();
   form.append("file", file);
-
-  const res = await fetch(`${BASE}/documents/upload`, {
-    method: "POST",
-    headers: await authHeaders(),
-    body: form,
-  });
-
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data?.detail || "Upload failed");
-
-  return data as {
+  return api.post<{
     document_id: string;
     status: string;
     storage_path: string;
-  };
+  }>("/documents/upload", form);
 }
 
 export async function studentChat(payload: {
@@ -36,36 +16,15 @@ export async function studentChat(payload: {
   top_k?: number;
   use_llm?: boolean;
 }) {
-  const res = await fetch(`${BASE}/student/chat`, {
-    method: "POST",
-    headers: await authHeaders({ "Content-Type": "application/json" }),
-    body: JSON.stringify(payload),
-  });
-
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data?.detail || "Chat failed");
-
-  return data as {
+  return api.post<{
     answer: string;
-    sources: {
-      chunk_index: number;
-      preview: string;
-      similarity?: number;
-    }[];
+    sources: { chunk_index: number; preview: string; similarity?: number }[];
     meta: Record<string, unknown>;
-  };
+  }>("/student/chat", payload);
 }
 
 export async function listDocuments() {
-  const res = await fetch(`${BASE}/documents`, {
-    method: "GET",
-    headers: await authHeaders(),
-  });
-
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data?.detail || "Failed to load documents");
-
-  return data as {
+  return api.get<{
     documents: {
       id: string;
       title: string;
@@ -73,68 +32,29 @@ export async function listDocuments() {
       created_at?: string;
       storage_path?: string;
     }[];
-  };
+  }>("/documents");
 }
 
 export async function generateFlashcards(payload: {
   document_id: string;
   max_cards?: number;
 }) {
-  const res = await fetch(`${BASE}/flashcards/generate`, {
-    method: "POST",
-    headers: await authHeaders({ "Content-Type": "application/json" }),
-    body: JSON.stringify(payload),
-  });
-
-  const data = await res.json().catch(() => ({}));
-
-  if (!res.ok) {
-    throw new Error(data?.detail || "Failed to generate flashcards");
-  }
-
-  return data as {
+  return api.post<{
     document_id: string;
-    flashcards: {
-      question: string;
-      answer: string;
-      chunk_index: number;
-    }[];
+    flashcards: { question: string; answer: string; chunk_index: number }[];
     total: number;
-  };
+  }>("/flashcards/generate", payload);
 }
 
 export async function getStudentDashboard() {
-  const res = await fetch(`${BASE}/student/dashboard`, {
-    method: "GET",
-    headers: await authHeaders(),
-  });
-
-  const data = await res.json().catch(() => ({}));
-
-  if (!res.ok) {
-    throw new Error(data?.detail || "Failed to load student dashboard");
-  }
-
-  return data as {
+  return api.get<{
     documents_uploaded: number;
     questions_asked: number;
     flashcards_created: number;
-    recent_activity: {
-      type: string;
-      label: string;
-      created_at?: string | null;
-    }[];
-  };
+    recent_activity: { type: string; label: string; created_at?: string | null }[];
+  }>("/student/dashboard");
 }
 
 export async function getStudyAnalytics() {
-  const res = await fetch(`${BASE}/student/analytics`, {
-    method: "GET",
-    headers: await authHeaders(),
-  });
-
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data?.detail || "Failed to load analytics");
-
-  return data;
+  return api.get<Record<string, unknown>>("/student/analytics");
 }

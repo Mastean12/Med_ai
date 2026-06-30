@@ -5,14 +5,13 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import { studentChat, listDocuments } from "@/lib/api";
+import { API_BASE_URL } from "@/lib/apiClient";
 import { MessageSquare, Send, FileText, ChevronDown, ChevronRight, BookOpen, Brain, Sparkles, ExternalLink } from "lucide-react";
 import ResponseCard from "@/components/ResponseCard";
 
 type Source = { chunk_index: number; preview: string; similarity?: number };
 type Msg = { role: "user" | "assistant"; text: string; sources?: Source[]; response_badge?: string; confidence?: number; related_questions?: string[]; formatted_sections?: any[] };
 type DocRow = { id: string; title: string; status?: string };
-
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
 
 export default function StudentChatPage() {
   const { user, loading: authLoading } = useAuth();
@@ -54,7 +53,7 @@ export default function StudentChatPage() {
     setLoading(true);
     try {
       const token = await getToken();
-      const res = await fetch(`${BACKEND}/student/chat`, {
+      const res = await fetch(`${API_BASE_URL}/student/chat`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify({ question: q, document_id: documentId.trim(), top_k: 5 }),
