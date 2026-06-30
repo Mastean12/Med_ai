@@ -1,22 +1,39 @@
-from fastapi import FastAPI
+import logging
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from app.api.routers import flashcards
 
 from app.api.routers import documents, student, public, billing, test, auth, tutor, notes, exam, adaptive, research, settings
+from app.core.config import ENV, CORS_ORIGINS
 
-app = FastAPI(title="Noctual AI Backend")
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
+    datefmt="%Y-%m-%dT%H:%M:%S",
+)
 
+app = FastAPI(
+    title="Noctual AI Backend",
+    docs_url="/docs" if ENV != "production" else None,
+    redoc_url=None,
+)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
+    allow_origins=[o.strip() for o in CORS_ORIGINS.split(",")],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger = logging.getLogger("noctual.error")
+    logger.error("Unhandled error: %s", str(exc), exc_info=True)
+    return JSONResponse(status_code=500, content={"detail": "Internal server error"})
+
 
 app.include_router(documents.router, prefix="/documents", tags=["Documents"])
 app.include_router(student.router, prefix="/student", tags=["Student"])
