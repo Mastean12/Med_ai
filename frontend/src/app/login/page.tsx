@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { Sparkles } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         <div className="rounded-3xl border border-surface-200 bg-white p-8 shadow-sm">
           <div className="mb-8 text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-2xl">🔐</div>
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50"><Sparkles className="h-6 w-6 text-brand-600" /></div>
             <h1 className="text-xl font-bold text-surface-900">Welcome back</h1>
             <p className="mt-1 text-sm text-surface-500">Sign in to your account</p>
           </div>

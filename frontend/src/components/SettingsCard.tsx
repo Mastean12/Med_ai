@@ -63,14 +63,16 @@ export function ToggleSwitch({
         aria-checked={checked}
         onClick={() => { if (!disabled) onChange(!checked); }}
         disabled={disabled}
-        className={`relative h-6 w-11 shrink-0 rounded-full outline-none transition-colors duration-200 ${
+        className={`group relative h-7 w-12 shrink-0 rounded-full outline-none transition-colors duration-200 ${
           checked ? "bg-brand-600" : "bg-surface-300"
         } ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
         focus-visible:ring-2 focus-visible:ring-brand-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-50`}
       >
-        <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-all duration-200 ${
-          checked ? "translate-x-5" : "translate-x-1"
-        }`} />
+        <span
+          className={`absolute left-0.5 top-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-sm ring-0 transition-all duration-200 ${
+            checked ? "translate-x-5" : "translate-x-0"
+          }`}
+        />
       </button>
     </div>
   );
