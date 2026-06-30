@@ -1,7 +1,9 @@
 import re
+import time
 import logging
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
 from app.api.routers import flashcards
 
@@ -26,8 +28,11 @@ cors_regex_patterns = []
 static_origins = []
 for origin in cors_list:
     if "*." in origin:
-        escaped = re.escape(origin).replace(r"\*\.", r"[a-zA-Z0-9\-]+.")
-        cors_regex_patterns.append(escaped)
+        escaped = re.escape(origin)
+        # Replace the escaped subdomain pattern with a character class
+        # re.escape("*.vercel.app") -> "\\*\\.vercel\\.app"
+        regex_str = escaped.replace("\\*\\.", "[a-zA-Z0-9\\-]+\\.")
+        cors_regex_patterns.append(regex_str)
     else:
         static_origins.append(origin)
 
@@ -43,11 +48,27 @@ app.add_middleware(
 )
 
 
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    start = time.time()
+    response = await call_next(request)
+    duration = (time.time() - start) * 1000
+    logger = logging.getLogger("noctual.access")
+    logger.info(
+        "%s %s %s [%.0fms]",
+        request.method,
+        request.url.path,
+        response.status_code,
+        duration,
+    )
+    return response
+
+
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     logger = logging.getLogger("noctual.error")
-    logger.error("Unhandled error: %s", str(exc), exc_info=True)
-    return JSONResponse(status_code=500, content={"detail": "Internal server error"})
+    logger.error("Unhandled error on %s %s: %s", request.method, request.url.path, str(exc), exc_info=True)
+    return JSONResponse(status_code=500, content={"detail": "Internal server error", "path": request.url.path})
 
 
 app.include_router(documents.router, prefix="/documents", tags=["Documents"])
