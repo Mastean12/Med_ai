@@ -1,11 +1,10 @@
-# app/services/embeddings_service.py
 from functools import lru_cache
-from sentence_transformers import SentenceTransformer
 
-MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"  # 384 dims
+MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 
 @lru_cache(maxsize=1)
-def get_model() -> SentenceTransformer:
+def get_model():
+    from sentence_transformers import SentenceTransformer
     return SentenceTransformer(MODEL_NAME)
 
 def embed_text(text: str) -> list[float]:
