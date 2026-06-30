@@ -1,18 +1,17 @@
-"""
-Subscription Plan Definitions.
-
-Central source of truth for plan tiers, feature limits,
-and pricing. Used by billing, usage tracking, and feature gating.
-"""
-
 from enum import Enum
 from typing import Dict, List
+
+from app.core.config import (
+    STRIPE_PRICE_PRO_MONTHLY,
+    STRIPE_PRICE_PRO_YEARLY,
+    STRIPE_PRICE_UNIVERSITY,
+)
 
 
 class PlanTier(str, Enum):
     FREE = "free"
     PRO = "pro"
-    PREMIUM = "premium"
+    UNIVERSITY = "university"
 
 
 class PlanStatus(str, Enum):
@@ -38,34 +37,23 @@ class Feature(str, Enum):
     CLINICAL_SIMULATIONS = "clinical_simulations"
 
 
-# Import Stripe price IDs from environment config
-from app.core.config import (
-    STRIPE_PRO_MONTHLY_PRICE_ID,
-    STRIPE_PRO_YEARLY_PRICE_ID,
-    STRIPE_PREMIUM_MONTHLY_PRICE_ID,
-    STRIPE_PREMIUM_YEARLY_PRICE_ID,
-)
-
-# Pricing (Stripe Price IDs — set via environment variables)
-STRIPE_PRICES = {
-    PlanTier.PRO: {
-        "monthly": STRIPE_PRO_MONTHLY_PRICE_ID,
-        "yearly": STRIPE_PRO_YEARLY_PRICE_ID,
-    },
-    PlanTier.PREMIUM: {
-        "monthly": STRIPE_PREMIUM_MONTHLY_PRICE_ID,
-        "yearly": STRIPE_PREMIUM_YEARLY_PRICE_ID,
-    },
+# Mapping from user-facing plan key to Stripe Price ID
+PRICE_ID_MAP: Dict[str, str] = {
+    "pro_monthly": STRIPE_PRICE_PRO_MONTHLY,
+    "pro_yearly": STRIPE_PRICE_PRO_YEARLY,
+    "university": STRIPE_PRICE_UNIVERSITY,
 }
+
 
 # Human-readable prices
 PLAN_PRICES = {
     PlanTier.FREE: {"monthly": 0, "yearly": 0},
     PlanTier.PRO: {"monthly": 19, "yearly": 190},
-    PlanTier.PREMIUM: {"monthly": 49, "yearly": 490},
+    PlanTier.UNIVERSITY: {"monthly": 99, "yearly": 990},
 }
 
-# Feature limits per plan per period (monthly)
+
+# Feature limits per plan (monthly). -1 = unlimited.
 PLAN_LIMITS: Dict[PlanTier, Dict[Feature, int]] = {
     PlanTier.FREE: {
         Feature.AI_QUESTIONS: 20,
@@ -77,16 +65,16 @@ PLAN_LIMITS: Dict[PlanTier, Dict[Feature, int]] = {
         Feature.CLINICAL_SIMULATIONS: 0,
     },
     PlanTier.PRO: {
-        Feature.AI_QUESTIONS: 200,
-        Feature.FLASHCARDS_GENERATED: 100,
-        Feature.UPLOADS: 50,
-        Feature.TUTORING_SESSIONS: 50,
-        Feature.SUMMARIES_GENERATED: 50,
-        Feature.EXAM_SESSIONS: 20,
+        Feature.AI_QUESTIONS: -1,
+        Feature.FLASHCARDS_GENERATED: -1,
+        Feature.UPLOADS: -1,
+        Feature.TUTORING_SESSIONS: -1,
+        Feature.SUMMARIES_GENERATED: -1,
+        Feature.EXAM_SESSIONS: -1,
         Feature.CLINICAL_SIMULATIONS: 0,
     },
-    PlanTier.PREMIUM: {
-        Feature.AI_QUESTIONS: -1,  # -1 = unlimited
+    PlanTier.UNIVERSITY: {
+        Feature.AI_QUESTIONS: -1,
         Feature.FLASHCARDS_GENERATED: -1,
         Feature.UPLOADS: -1,
         Feature.TUTORING_SESSIONS: -1,
@@ -96,35 +84,36 @@ PLAN_LIMITS: Dict[PlanTier, Dict[Feature, int]] = {
     },
 }
 
-# Feature descriptions for the pricing page
+
 PLAN_FEATURES: Dict[PlanTier, List[str]] = {
     PlanTier.FREE: [
         "3 document uploads",
-        "20 AI questions per day",
+        "20 AI questions per month",
         "Basic flashcards",
         "Limited summarization",
         "Symptom checker access",
         "Health tips library",
     ],
     PlanTier.PRO: [
-        "50 document uploads/month",
-        "200 AI questions/month",
-        "100 flashcard generations",
-        "Unlimited AI chat",
-        "Spaced repetition system",
-        "Exam preparation mode",
-        "Advanced analytics dashboard",
+        "Unlimited AI Chat",
+        "Unlimited AI Tutor",
+        "Unlimited exam mode",
+        "Unlimited flashcards",
+        "Unlimited uploads",
+        "Advanced analytics",
         "Priority AI access",
+        "Adaptive learning",
+        "Revision sheets",
     ],
-    PlanTier.PREMIUM: [
-        "Unlimited everything",
-        "Clinical case simulations",
-        "Adaptive learning AI",
-        "Advanced coaching mode",
-        "Performance analytics",
-        "University group tools",
-        "Priority AI + fastest model",
-        "Early access to new features",
-        "Dedicated support",
+    PlanTier.UNIVERSITY: [
+        "Everything in Pro",
+        "Clinical simulations",
+        "Multiple users",
+        "Organization dashboard",
+        "Student analytics",
+        "Instructor dashboard",
+        "Institution reports",
+        "Role management",
+        "Team billing",
     ],
 }

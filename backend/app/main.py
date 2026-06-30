@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 from app.api.routers import flashcards
 
 from app.api.routers import documents, student, public, billing, test, auth, tutor, notes, exam, adaptive, research, settings
+from app.api.routers.billing import stripe_router
 from app.core.config import ENV, CORS_ORIGINS
 
 logging.basicConfig(
@@ -84,6 +85,7 @@ app.include_router(exam.router)
 app.include_router(adaptive.router)
 app.include_router(research.router)
 app.include_router(settings.router)
+app.include_router(stripe_router, prefix="/stripe", tags=["Stripe"])
 
 
 @app.get("/")

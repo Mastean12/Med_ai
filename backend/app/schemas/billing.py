@@ -1,36 +1,18 @@
-"""
-Billing & Subscription Schemas.
-
-Pydantic models for all billing endpoints.
-"""
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any
 from enum import Enum
 
 
-class BillingInterval(str, Enum):
-    MONTHLY = "monthly"
-    YEARLY = "yearly"
-
-
-class PlanTierStr(str, Enum):
-    FREE = "free"
-    PRO = "pro"
-    PREMIUM = "premium"
-
-
 class CheckoutIn(BaseModel):
-    plan: PlanTierStr
-    billing_interval: BillingInterval = BillingInterval.MONTHLY
+    plan: str  # "pro_monthly", "pro_yearly", or "university"
 
 
 class CheckoutOut(BaseModel):
     checkout_url: Optional[str] = None
-    session_id: Optional[str] = None
 
 
 class PortalOut(BaseModel):
-    portal_url: Optional[str] = None
+    url: Optional[str] = None
 
 
 class SubscriptionOut(BaseModel):
@@ -40,12 +22,15 @@ class SubscriptionOut(BaseModel):
     current_period_end: Optional[str] = None
     cancel_at_period_end: bool = False
     trial_end: Optional[str] = None
+    stripe_customer_id: Optional[str] = None
+    stripe_subscription_id: Optional[str] = None
+    renewal_date: Optional[str] = None
 
 
 class StkPushIn(BaseModel):
-    phone_number: str = Field(..., min_length=12, max_length=12, description="2547XXXXXXXX")
-    amount: int = Field(..., gt=0, description="Amount in KES")
-    plan: PlanTierStr = PlanTierStr.PRO
+    phone_number: str = Field(..., min_length=12, max_length=12)
+    amount: int = Field(..., gt=0)
+    plan: str = "pro"
 
 
 class StkPushOut(BaseModel):

@@ -4,16 +4,41 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
+import { API_BASE_URL } from "@/lib/apiClient";
 import {
-  CreditCard, Calendar, Shield, Zap, Download,
-  ArrowRight, RefreshCw, Crown, AlertTriangle,
-  BadgeCheck, BarChart3,
+  CreditCard, Calendar, Shield, RefreshCw, Crown,
+  ArrowRight, Sparkles, AlertTriangle, BarChart3,
+  GraduationCap, ExternalLink, BadgeCheck,
 } from "lucide-react";
 
-import { API_BASE_URL } from "@/lib/apiClient";
+type Subscription = {
+  plan: string;
+  status: string;
+  provider: string | null;
+  current_period_end: string | null;
+  cancel_at_period_end: boolean;
+  stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
+  renewal_date: string | null;
+};
 
-type Subscription = { plan: string; status: string; provider: string | null; current_period_end: string | null; cancel_at_period_end: boolean };
-type UsageSummary = { plan: string; period: string; features: Record<string, { used: number; limit: number | null; unlimited: boolean; remaining: number | null }> };
+type UsageSummary = {
+  plan: string;
+  period: string;
+  features: Record<string, { used: number; limit: number | null; unlimited: boolean; remaining: number | null }>;
+};
+
+const PLAN_LABELS: Record<string, string> = {
+  free: "Free",
+  pro: "Student Pro",
+  university: "University",
+};
+
+const PLAN_COLORS: Record<string, string> = {
+  free: "bg-surface-100 text-surface-600",
+  pro: "bg-brand-50 text-brand-700",
+  university: "bg-purple-50 text-purple-700",
+};
 
 export default function BillingPage() {
   const { user, loading: authLoading } = useAuth();
@@ -42,11 +67,13 @@ export default function BillingPage() {
     setActionLoading("portal"); setError("");
     try {
       const token = await getToken();
-      const res = await fetch(`${API_BASE_URL}/billing/customer-portal`, { method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } });
+      const res = await fetch(`${API_BASE_URL}/billing/create-customer-portal`, {
+        method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      });
       const data = await res.json();
-      if (data.portal_url) window.location.href = data.portal_url;
-      else setError("Could not open billing portal.");
-    } catch { setError("Failed."); } finally { setActionLoading(null); }
+      if (data.url) window.location.href = data.url;
+      else setError(data.detail || "Could not open billing portal.");
+    } catch { setError("Failed to open billing portal."); } finally { setActionLoading(null); }
   };
 
   const handleCancel = async () => {
@@ -54,18 +81,34 @@ export default function BillingPage() {
     setActionLoading("cancel"); setError("");
     try {
       const token = await getToken();
-      const res = await fetch(`${API_BASE_URL}/billing/cancel`, { method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } });
+      const res = await fetch(`${API_BASE_URL}/billing/cancel`, {
+        method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      });
       if (res.ok) setSub((s) => s ? { ...s, cancel_at_period_end: true } : s);
-      else setError((await res.json()).detail || "Failed.");
-    } catch { setError("Failed."); } finally { setActionLoading(null); }
+      else setError((await res.json()).detail || "Failed to cancel.");
+    } catch { setError("Network error."); } finally { setActionLoading(null); }
   };
 
-  if (authLoading || loading) return <div className="space-y-4 p-6 lg:p-8"><div className="h-8 w-48 animate-shimmer rounded-xl" /><div className="h-40 animate-shimmer rounded-2xl" /></div>;
-  if (!user) return <div className="p-8 text-center"><p className="text-surface-500">Please <Link href="/login" className="text-brand-600 hover:underline">sign in</Link> to manage billing.</p></div>;
+  if (authLoading || loading) {
+    return (
+      <div className="space-y-4 p-6 lg:p-8">
+        <div className="h-8 w-48 animate-shimmer rounded-xl" />
+        <div className="h-40 animate-shimmer rounded-2xl" />
+      </div>
+    );
+  }
 
-  const planName = sub?.plan || "free";
-  const isPaid = sub?.plan !== "free";
-  const planColors: Record<string, string> = { free: "bg-surface-100 text-surface-600", pro: "bg-brand-50 text-brand-700", premium: "bg-purple-50 text-purple-700" };
+  if (!user) {
+    return (
+      <div className="p-8 text-center">
+        <p className="text-surface-500">Please <Link href="/login" className="text-brand-600 hover:underline">sign in</Link> to manage billing.</p>
+      </div>
+    );
+  }
+
+  const planKey = sub?.plan || "free";
+  const planLabel = PLAN_LABELS[planKey] || planKey;
+  const isPaid = planKey !== "free";
 
   return (
     <div className="space-y-6 p-6 lg:p-8">
@@ -81,23 +124,29 @@ export default function BillingPage() {
 
       {error && <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
 
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
-        className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-2xl border border-surface-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center gap-2 mb-4"><Crown className="h-4 w-4 text-brand-500" /><h3 className="text-sm font-semibold text-surface-700">Your Plan</h3></div>
+      <div className="grid gap-6 lg:grid-cols-2">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
+          className="rounded-2xl border border-surface-200 bg-white p-6 shadow-sm">
+          <div className="flex items-center gap-2 mb-4">
+            {planKey === "university" ? <GraduationCap className="h-4 w-4 text-purple-500" /> : <Crown className="h-4 w-4 text-brand-500" />}
+            <h3 className="text-sm font-semibold text-surface-700">Your Plan</h3>
+          </div>
           <div className="flex items-center gap-3">
-            <span className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold capitalize ${planColors[planName] || planColors.free}`}>
-              {isPaid ? <BadgeCheck className="h-4 w-4" /> : null} {planName}
+            <span className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold capitalize ${PLAN_COLORS[planKey] || PLAN_COLORS.free}`}>
+              {isPaid && <BadgeCheck className="h-4 w-4" />} {planLabel}
             </span>
             {sub?.status && (
-              <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${sub.status === "active" ? "bg-green-50 text-green-700" : sub.status === "past_due" ? "bg-red-50 text-red-700" : "bg-amber-50 text-amber-700"}`}>
-                {sub.status}
-              </span>
+              <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                sub.status === "active" ? "bg-green-50 text-green-700" :
+                sub.status === "past_due" ? "bg-red-50 text-red-700" :
+                "bg-amber-50 text-amber-700"
+              }`}>{sub.status}</span>
             )}
           </div>
           {sub?.current_period_end && (
             <p className="mt-3 text-sm text-surface-500">
-              {sub.cancel_at_period_end ? "Ends" : "Renews"} on {new Date(sub.current_period_end).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+              {sub.cancel_at_period_end ? "Ends" : "Renews"} on {" "}
+              {new Date(sub.current_period_end).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
               {sub.cancel_at_period_end && <span className="ml-2 text-amber-600 font-medium">(will not renew)</span>}
             </p>
           )}
@@ -109,8 +158,8 @@ export default function BillingPage() {
             ) : (
               <>
                 <button onClick={handlePortal} disabled={actionLoading === "portal"}
-                  className="rounded-xl bg-surface-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-surface-800 disabled:opacity-40">
-                  Manage Billing
+                  className="inline-flex items-center gap-2 rounded-xl bg-surface-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-surface-800 disabled:opacity-40">
+                  <ExternalLink className="h-4 w-4" /> Manage Billing
                 </button>
                 {!sub?.cancel_at_period_end && (
                   <button onClick={handleCancel} disabled={actionLoading === "cancel"}
@@ -121,14 +170,20 @@ export default function BillingPage() {
               </>
             )}
           </div>
-        </div>
+        </motion.div>
 
-        <div className="rounded-2xl border border-surface-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center gap-2 mb-4"><CreditCard className="h-4 w-4 text-accent-500" /><h3 className="text-sm font-semibold text-surface-700">Payment Method</h3></div>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }}
+          className="rounded-2xl border border-surface-200 bg-white p-6 shadow-sm">
+          <div className="flex items-center gap-2 mb-4">
+            <CreditCard className="h-4 w-4 text-accent-500" />
+            <h3 className="text-sm font-semibold text-surface-700">Payment Method</h3>
+          </div>
           {sub?.provider === "stripe" ? (
             <div>
               <p className="text-sm text-surface-700">Managed by Stripe</p>
-              <button onClick={handlePortal} className="mt-2 text-sm font-medium text-brand-600 hover:text-brand-700">Update method →</button>
+              <button onClick={handlePortal} className="mt-2 text-sm font-medium text-brand-600 hover:text-brand-700">
+                Update payment method →
+              </button>
             </div>
           ) : (
             <div>
@@ -136,20 +191,30 @@ export default function BillingPage() {
               <Link href="/pricing" className="mt-2 inline-block text-sm font-medium text-brand-600 hover:text-brand-700">Add one →</Link>
             </div>
           )}
-        </div>
-      </motion.div>
+          {sub?.stripe_subscription_id && (
+            <p className="mt-3 text-xs text-surface-400 font-mono">ID: {sub.stripe_subscription_id.slice(0, 14)}...</p>
+          )}
+        </motion.div>
+      </div>
 
       {usage?.features && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
           className="rounded-2xl border border-surface-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center gap-2 mb-4"><BarChart3 className="h-4 w-4 text-brand-500" /><h3 className="text-sm font-semibold text-surface-700">Usage This Period</h3></div>
+          <div className="flex items-center gap-2 mb-4">
+            <BarChart3 className="h-4 w-4 text-brand-500" />
+            <h3 className="text-sm font-semibold text-surface-700">Usage This Period</h3>
+          </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {Object.entries(usage.features).map(([key, val]) => {
               const pct = val.unlimited ? 0 : val.limit ? Math.min((val.used / val.limit) * 100, 100) : 0;
               const nearLimit = !val.unlimited && val.remaining !== null && val.remaining <= 2;
               const exceeded = !val.unlimited && val.remaining !== null && val.remaining <= 0;
               return (
-                <div key={key} className={`rounded-xl border p-4 ${exceeded ? "border-red-200 bg-red-50" : nearLimit ? "border-amber-200 bg-amber-50" : "border-surface-100 bg-surface-50"}`}>
+                <div key={key} className={`rounded-xl border p-4 ${
+                  exceeded ? "border-red-200 bg-red-50" :
+                  nearLimit ? "border-amber-200 bg-amber-50" :
+                  "border-surface-100 bg-surface-50"
+                }`}>
                   <p className="text-xs font-medium text-surface-500 uppercase tracking-wide">{key.replace(/_/g, " ")}</p>
                   <div className="mt-2 flex items-baseline gap-1">
                     <span className={`text-xl font-bold ${exceeded ? "text-red-600" : "text-surface-800"}`}>{val.used}</span>
@@ -157,7 +222,9 @@ export default function BillingPage() {
                   </div>
                   {!val.unlimited && (
                     <div className="mt-2 h-1.5 rounded-full bg-surface-200">
-                      <div className={`h-full rounded-full transition-all ${exceeded ? "bg-red-500" : nearLimit ? "bg-amber-500" : "bg-brand-500"}`} style={{ width: `${pct}%` }} />
+                      <div className={`h-full rounded-full transition-all ${
+                        exceeded ? "bg-red-500" : nearLimit ? "bg-amber-500" : "bg-brand-500"
+                      }`} style={{ width: `${pct}%` }} />
                     </div>
                   )}
                   {nearLimit && !exceeded && <p className="mt-1 text-xs text-amber-600">{val.remaining} remaining</p>}
@@ -181,7 +248,7 @@ export default function BillingPage() {
       {!isPaid && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
           className="rounded-2xl border border-brand-200 bg-gradient-to-br from-brand-50 to-purple-50 p-6 text-center">
-          <SparklesIcon className="mx-auto h-8 w-8 text-brand-500" />
+          <Sparkles className="mx-auto h-8 w-8 text-brand-500" />
           <h3 className="mt-3 text-lg font-bold text-surface-900">Unlock the full Noctual experience</h3>
           <p className="mt-1 text-sm text-surface-500">Get unlimited AI tutoring, exam mode, clinical simulations, and more.</p>
           <Link href="/pricing" className="mt-4 inline-flex items-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-brand-700">
@@ -190,14 +257,6 @@ export default function BillingPage() {
         </motion.div>
       )}
     </div>
-  );
-}
-
-function SparklesIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
-    </svg>
   );
 }
 
