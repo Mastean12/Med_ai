@@ -16,6 +16,7 @@ venv/
 .env.production
 .env.development
 !/.env.example
+!/frontend/.env.example
 
 # Node
 node_modules/
