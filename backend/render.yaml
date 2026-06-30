@@ -27,6 +27,14 @@ services:
         sync: false
       - key: STRIPE_PUBLISHABLE_KEY
         sync: false
+      - key: STRIPE_PRO_MONTHLY_PRICE_ID
+        sync: false
+      - key: STRIPE_PRO_YEARLY_PRICE_ID
+        sync: false
+      - key: STRIPE_PREMIUM_MONTHLY_PRICE_ID
+        sync: false
+      - key: STRIPE_PREMIUM_YEARLY_PRICE_ID
+        sync: false
       - key: APP_BASE_URL
         value: https://med-ai-indol.vercel.app
       - key: BACKEND_BASE_URL

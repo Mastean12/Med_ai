@@ -38,15 +38,23 @@ class Feature(str, Enum):
     CLINICAL_SIMULATIONS = "clinical_simulations"
 
 
-# Pricing (Stripe Price IDs — replace with actual IDs from Stripe Dashboard)
+# Import Stripe price IDs from environment config
+from app.core.config import (
+    STRIPE_PRO_MONTHLY_PRICE_ID,
+    STRIPE_PRO_YEARLY_PRICE_ID,
+    STRIPE_PREMIUM_MONTHLY_PRICE_ID,
+    STRIPE_PREMIUM_YEARLY_PRICE_ID,
+)
+
+# Pricing (Stripe Price IDs — set via environment variables)
 STRIPE_PRICES = {
     PlanTier.PRO: {
-        "monthly": "",  # Set from Stripe Dashboard
-        "yearly": "",    # Set from Stripe Dashboard
+        "monthly": STRIPE_PRO_MONTHLY_PRICE_ID,
+        "yearly": STRIPE_PRO_YEARLY_PRICE_ID,
     },
     PlanTier.PREMIUM: {
-        "monthly": "",
-        "yearly": "",
+        "monthly": STRIPE_PREMIUM_MONTHLY_PRICE_ID,
+        "yearly": STRIPE_PREMIUM_YEARLY_PRICE_ID,
     },
 }
 

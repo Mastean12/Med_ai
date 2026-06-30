@@ -73,6 +73,7 @@ export default function PricingPage() {
   const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [usage, setUsage] = useState<Record<string, { used: number; limit: number | null }>>({});
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!user) return;
@@ -94,7 +95,7 @@ export default function PricingPage() {
 
   const handleCheckout = async (plan: string) => {
     if (plan === "free") return;
-    setLoadingPlan(plan);
+    setLoadingPlan(plan); setError("");
     try {
       const token = await getToken();
       if (!token) { window.location.href = "/login?redirect=pricing"; return; }
@@ -104,8 +105,14 @@ export default function PricingPage() {
         body: JSON.stringify({ plan, billing_interval: billing }),
       });
       const data = await res.json();
-      if (data.checkout_url) window.location.href = data.checkout_url;
-    } catch {} finally { setLoadingPlan(null); }
+      if (data.checkout_url) {
+        window.location.href = data.checkout_url;
+      } else {
+        setError(data.detail || "Unable to start checkout. Please try again.");
+      }
+    } catch (err) {
+      setError("A network error occurred. Please check your connection.");
+    } finally { setLoadingPlan(null); }
   };
 
   return (
@@ -126,6 +133,10 @@ export default function PricingPage() {
           </button>
         </div>
       </motion.div>
+
+      {error && (
+        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">{error}</div>
+      )}
 
       {user && Object.keys(usage).length > 0 && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
