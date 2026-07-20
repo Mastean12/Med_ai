@@ -23,7 +23,7 @@ export default function Footer() {
               <span className="text-base font-bold tracking-tight text-surface-900">Noctual AI</span>
             </Link>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-surface-500">
-              AI-powered medical education and public health assistance.
+              Shaping tomorrow's healthcare professionals.
             </p>
             <p className="mt-2 text-xs text-surface-400">
               Not a substitute for professional medical advice, diagnosis, or treatment.

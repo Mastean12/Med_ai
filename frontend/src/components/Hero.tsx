@@ -8,7 +8,7 @@ export default function Hero() {
         <div className="mx-auto max-w-3xl text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-surface-200 bg-white/90 px-4 py-1.5 text-sm font-medium text-surface-600 backdrop-blur">
             <span className="flex h-2 w-2 rounded-full bg-accent-500 animate-pulse-soft" />
-            AI-powered medical education
+            Shaping Tomorrow's Healthcare Professionals
           </div>
           <h1 className="text-4xl font-bold leading-tight tracking-tight text-surface-900 md:text-5xl lg:text-6xl">
             Smarter study.

@@ -6,9 +6,9 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata = {
-  title: "Noctual AI — Smarter Study, Better Patient Outcomes",
+  title: "Noctual — Shaping Tomorrow's Healthcare Professionals",
   description:
-    "AI-powered medical education and public health assistant. Upload notes, generate flashcards, ask questions, track progress.",
+    "Upload medical notes, generate smart flashcards, and get AI-powered Q&A with source citations.",
 };
 
 const themeScript = `
