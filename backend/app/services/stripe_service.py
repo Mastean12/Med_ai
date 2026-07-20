@@ -17,8 +17,8 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def _map_plan_key_to_tier(plan_key: str) -> PlanTier:
     """Map user-facing plan key to PlanTier enum."""
-    if plan_key == "university":
-        return PlanTier.UNIVERSITY
+    if plan_key.startswith("premium"):
+        return PlanTier.PREMIUM
     return PlanTier.PRO
 
 

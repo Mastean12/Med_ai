@@ -6,9 +6,10 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import { API_BASE_URL } from "@/lib/apiClient";
 import {
-  CreditCard, Calendar, Shield, RefreshCw, Crown,
-  ArrowRight, AlertTriangle, BarChart3,
+  CreditCard, Crown, ArrowRight,
+  AlertTriangle, BarChart3, Shield,
   GraduationCap, ExternalLink, BadgeCheck,
+  RefreshCw, BookOpen,
 } from "lucide-react";
 
 type Subscription = {
@@ -19,25 +20,42 @@ type Subscription = {
   cancel_at_period_end: boolean;
   stripe_customer_id: string | null;
   stripe_subscription_id: string | null;
-  renewal_date: string | null;
 };
 
 type UsageSummary = {
   plan: string;
-  period: string;
   features: Record<string, { used: number; limit: number | null; unlimited: boolean; remaining: number | null }>;
 };
 
 const PLAN_LABELS: Record<string, string> = {
   free: "Free",
   pro: "Student Pro",
-  university: "University",
+  premium: "Premium",
+};
+
+const PLAN_ICONS: Record<string, typeof Crown> = {
+  free: BookOpen,
+  pro: Crown,
+  premium: Shield,
 };
 
 const PLAN_COLORS: Record<string, string> = {
   free: "bg-surface-100 text-surface-600",
   pro: "bg-brand-50 text-brand-700",
-  university: "bg-purple-50 text-purple-700",
+  premium: "bg-purple-50 text-purple-700",
+};
+
+const FEATURE_LABELS: Record<string, string> = {
+  uploads: "PDF Uploads",
+  ai_questions: "AI Questions",
+  tutoring_sessions: "Tutor Sessions",
+  flashcards_generated: "Flashcards",
+  exam_sessions: "Exam Attempts",
+  ai_summaries: "AI Summaries",
+  revision_notes: "Revision Notes",
+  clinical_simulations: "Clinical Sims",
+  osce_sessions: "OSCE Sessions",
+  advanced_analytics: "Advanced Analytics",
 };
 
 export default function BillingPage() {
@@ -76,19 +94,6 @@ export default function BillingPage() {
     } catch { setError("Failed to open billing portal."); } finally { setActionLoading(null); }
   };
 
-  const handleCancel = async () => {
-    if (!confirm("Cancel your subscription? Access continues until period ends.")) return;
-    setActionLoading("cancel"); setError("");
-    try {
-      const token = await getToken();
-      const res = await fetch(`${API_BASE_URL}/billing/cancel`, {
-        method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-      });
-      if (res.ok) setSub((s) => s ? { ...s, cancel_at_period_end: true } : s);
-      else setError((await res.json()).detail || "Failed to cancel.");
-    } catch { setError("Network error."); } finally { setActionLoading(null); }
-  };
-
   if (authLoading || loading) {
     return (
       <div className="space-y-4 p-6 lg:p-8">
@@ -108,14 +113,16 @@ export default function BillingPage() {
 
   const planKey = sub?.plan || "free";
   const planLabel = PLAN_LABELS[planKey] || planKey;
+  const PlanIcon = PLAN_ICONS[planKey] || Crown;
   const isPaid = planKey !== "free";
+  const isPremium = planKey === "premium";
 
   return (
     <div className="space-y-6 p-6 lg:p-8">
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-surface-900">Billing & Subscription</h1>
-          <p className="mt-1 text-sm text-surface-500">Manage your plan, usage, and payment methods.</p>
+          <h1 className="text-2xl font-bold tracking-tight text-surface-900">Billing & Usage</h1>
+          <p className="mt-1 text-sm text-surface-500">Manage your plan, view usage, and update payment methods.</p>
         </div>
         <button onClick={() => window.location.reload()} className="inline-flex items-center gap-2 rounded-xl border border-surface-200 px-4 py-2 text-xs font-medium text-surface-500 hover:bg-surface-50">
           <RefreshCw className="h-3.5 w-3.5" /> Refresh
@@ -128,7 +135,7 @@ export default function BillingPage() {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
           className="rounded-2xl border border-surface-200 bg-white p-6 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
-            {planKey === "university" ? <GraduationCap className="h-4 w-4 text-purple-500" /> : <Crown className="h-4 w-4 text-brand-500" />}
+            <PlanIcon className={`h-4 w-4 ${isPremium ? "text-purple-500" : "text-brand-500"}`} />
             <h3 className="text-sm font-semibold text-surface-700">Your Plan</h3>
           </div>
           <div className="flex items-center gap-3">
@@ -140,12 +147,14 @@ export default function BillingPage() {
                 sub.status === "active" ? "bg-green-50 text-green-700" :
                 sub.status === "past_due" ? "bg-red-50 text-red-700" :
                 "bg-amber-50 text-amber-700"
-              }`}>{sub.status}</span>
+              }`}>
+                {sub.status === "active" ? "Active" : sub.status === "past_due" ? "Past Due" : "Cancelled"}
+              </span>
             )}
           </div>
           {sub?.current_period_end && (
             <p className="mt-3 text-sm text-surface-500">
-              {sub.cancel_at_period_end ? "Ends" : "Renews"} on {" "}
+              {sub.cancel_at_period_end ? "Ends" : "Renews"} on{" "}
               {new Date(sub.current_period_end).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
               {sub.cancel_at_period_end && <span className="ml-2 text-amber-600 font-medium">(will not renew)</span>}
             </p>
@@ -162,10 +171,9 @@ export default function BillingPage() {
                   <ExternalLink className="h-4 w-4" /> Manage Billing
                 </button>
                 {!sub?.cancel_at_period_end && (
-                  <button onClick={handleCancel} disabled={actionLoading === "cancel"}
-                    className="rounded-xl border border-red-200 px-5 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 disabled:opacity-40">
-                    Cancel
-                  </button>
+                  <Link href="/pricing" className="inline-flex items-center gap-2 rounded-xl border border-brand-200 px-5 py-2.5 text-sm font-medium text-brand-600 hover:bg-brand-50">
+                    Change Plan
+                  </Link>
                 )}
               </>
             )}
@@ -176,7 +184,7 @@ export default function BillingPage() {
           className="rounded-2xl border border-surface-200 bg-white p-6 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
             <CreditCard className="h-4 w-4 text-accent-500" />
-            <h3 className="text-sm font-semibold text-surface-700">Payment Method</h3>
+            <h3 className="text-sm font-semibold text-surface-700">Payment</h3>
           </div>
           {sub?.provider === "stripe" ? (
             <div>
@@ -192,7 +200,7 @@ export default function BillingPage() {
             </div>
           )}
           {sub?.stripe_subscription_id && (
-            <p className="mt-3 text-xs text-surface-400 font-mono">ID: {sub.stripe_subscription_id.slice(0, 14)}...</p>
+            <p className="mt-3 text-xs text-surface-400 font-mono">Sub: {sub.stripe_subscription_id.slice(0, 14)}...</p>
           )}
         </motion.div>
       </div>
@@ -206,6 +214,7 @@ export default function BillingPage() {
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {Object.entries(usage.features).map(([key, val]) => {
+              if (val.limit === 0) return null;
               const pct = val.unlimited ? 0 : val.limit ? Math.min((val.used / val.limit) * 100, 100) : 0;
               const nearLimit = !val.unlimited && val.remaining !== null && val.remaining <= 2;
               const exceeded = !val.unlimited && val.remaining !== null && val.remaining <= 0;
@@ -215,12 +224,16 @@ export default function BillingPage() {
                   nearLimit ? "border-amber-200 bg-amber-50" :
                   "border-surface-100 bg-surface-50"
                 }`}>
-                  <p className="text-xs font-medium text-surface-500 uppercase tracking-wide">{key.replace(/_/g, " ")}</p>
+                  <p className="text-xs font-medium text-surface-500 uppercase tracking-wide">
+                    {FEATURE_LABELS[key] || key.replace(/_/g, " ")}
+                  </p>
                   <div className="mt-2 flex items-baseline gap-1">
-                    <span className={`text-xl font-bold ${exceeded ? "text-red-600" : "text-surface-800"}`}>{val.used}</span>
-                    <span className="text-xs text-surface-400">/ {val.unlimited ? "∞" : val.limit}</span>
+                    <span className={`text-xl font-bold ${exceeded ? "text-red-600" : "text-surface-800"}`}>
+                      {val.unlimited ? "∞" : val.used}
+                    </span>
+                    {!val.unlimited && <span className="text-xs text-surface-400">/ {val.limit}</span>}
                   </div>
-                  {!val.unlimited && (
+                  {!val.unlimited && val.limit && val.limit > 0 && (
                     <div className="mt-2 h-1.5 rounded-full bg-surface-200">
                       <div className={`h-full rounded-full transition-all ${
                         exceeded ? "bg-red-500" : nearLimit ? "bg-amber-500" : "bg-brand-500"
@@ -233,11 +246,11 @@ export default function BillingPage() {
               );
             })}
           </div>
-          {!isPaid && Object.values(usage.features).some((v) => !v.unlimited && v.remaining !== null && v.remaining <= 2) && (
+          {!isPaid && (
             <div className="mt-4 rounded-xl border border-brand-200 bg-brand-50 p-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4 text-brand-600" />
-                <p className="text-sm font-medium text-brand-700">You&apos;re approaching your free plan limits.</p>
+                <p className="text-sm font-medium text-brand-700">You&apos;re on the Free plan. Upgrade to unlock more.</p>
               </div>
               <Link href="/pricing" className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-700">Upgrade →</Link>
             </div>
@@ -248,7 +261,7 @@ export default function BillingPage() {
       {!isPaid && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
           className="rounded-2xl border border-brand-200 bg-gradient-to-br from-brand-50 to-purple-50 p-6 text-center">
-          <h3 className="mt-3 text-lg font-bold text-surface-900">Unlock the full Medaitutor experience</h3>
+          <h3 className="text-lg font-bold text-surface-900">Unlock the full Medaitutor experience</h3>
           <p className="mt-1 text-sm text-surface-500">Get unlimited AI tutoring, exam mode, clinical simulations, and more.</p>
           <Link href="/pricing" className="mt-4 inline-flex items-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-brand-700">
             View Plans <ArrowRight className="h-4 w-4" />
