@@ -50,39 +50,16 @@ export default function Hero() {
             <p className="mt-6 text-sm text-surface-400">No credit card required. 10 free AI interactions daily.</p>
           </div>
 
-          {/* Right: Premium Image */}
+          {/* Right: Premium Illustration */}
           <div className="relative" aria-hidden="true">
             <div className="relative mx-auto aspect-[4/3] w-full max-w-lg lg:mx-0 lg:max-w-none">
-              <div className="relative h-full w-full overflow-hidden rounded-3xl border border-surface-200/50 shadow-2xl shadow-brand-500/10">
+              <div className="relative h-full w-full overflow-hidden rounded-3xl shadow-2xl shadow-brand-500/10">
                 <img
-                  src="/hero-medical-student.jpg"
-                  alt="Medical student studying with AI-powered learning tools"
-                  className="h-full w-full object-cover"
-                  loading="lazy"
+                  src="/hero-illustration.svg"
+                  alt="Medical student using AI-powered learning platform with holographic medical elements"
+                  className="h-full w-full object-contain"
+                  loading="eager"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-              </div>
-
-              {/* Glassmorphism stats card */}
-              <div className="absolute bottom-4 left-4 right-4 md:bottom-6 md:left-6 md:right-6">
-                <div className="rounded-2xl border border-white/20 bg-white/80 backdrop-blur-xl px-5 py-4 shadow-lg">
-                  <div className="flex items-center justify-between">
-                    <div className="text-left">
-                      <p className="text-xs font-medium text-surface-500">Active Learners</p>
-                      <p className="text-2xl font-bold text-surface-900">12,483+</p>
-                    </div>
-                    <div className="h-10 w-px bg-surface-200" />
-                    <div className="text-left">
-                      <p className="text-xs font-medium text-surface-500">Flashcards Created</p>
-                      <p className="text-2xl font-bold text-surface-900">847K+</p>
-                    </div>
-                    <div className="h-10 w-px bg-surface-200" />
-                    <div className="text-left">
-                      <p className="text-xs font-medium text-surface-500">Study Minutes</p>
-                      <p className="text-2xl font-bold text-surface-900">2.4M+</p>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
