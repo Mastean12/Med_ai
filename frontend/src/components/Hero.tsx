@@ -54,7 +54,7 @@ export default function Hero() {
           <div className="relative" aria-hidden="true">
             <div className="relative w-full overflow-hidden rounded-2xl shadow-xl shadow-brand-500/10 border border-surface-200">
               <img
-                src="/hero-medical-ai-student.jpg"
+                src="/hero.png"
                 alt="Medical student using AI-powered learning platform"
                 className="w-full h-auto block"
                 loading="eager"
