@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Menu, X, LogOut } from "lucide-react";
+import BrandLogo from "@/components/ui/BrandLogo";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -25,9 +26,8 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-surface-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3">
-        <Link href="/" className="flex shrink-0 items-center gap-2.5" onClick={() => setMobileOpen(false)}>
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-sm font-bold text-white">N</div>
-          <span className="text-base font-bold tracking-tight text-surface-900">Medaitutor</span>
+        <Link href="/" className="flex shrink-0 items-center" onClick={() => setMobileOpen(false)}>
+          <BrandLogo size="md" showImage />
         </Link>
 
         <nav className="hidden items-center gap-4 md:flex">

@@ -13,6 +13,7 @@ import {
   Settings, LogOut, Menu, X, ChevronLeft,
   User,
 } from "lucide-react";
+import BrandLogo from "@/components/ui/BrandLogo";
 
 const navItems = [
   { href: "/student", label: "Dashboard", icon: LayoutDashboard },
@@ -52,9 +53,8 @@ export function Sidebar() {
   const sidebarContent = (
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-3 px-4 py-5 border-b border-surface-200">
-        <Link href="/" className="flex shrink-0 items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-sm font-bold text-white">N</div>
-          {!collapsed && <span className="text-base font-bold tracking-tight text-surface-900">Medaitutor</span>}
+        <Link href="/" className="flex shrink-0 items-center">
+          <BrandLogo size="md" showImage />
         </Link>
         <button
           onClick={() => setCollapsed(!collapsed)}

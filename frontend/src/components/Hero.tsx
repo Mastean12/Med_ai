@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BrandLogo from "@/components/ui/BrandLogo";
 
 export default function Hero() {
   return (
@@ -6,9 +7,8 @@ export default function Hero() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,#eef2ff,transparent_60%)]" />
       <div className="relative mx-auto max-w-7xl px-6 pb-24 pt-20 md:pb-32 md:pt-28">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-surface-200 bg-white/90 px-4 py-1.5 text-sm font-medium text-surface-600 backdrop-blur">
-            <span className="flex h-2 w-2 rounded-full bg-accent-500 animate-pulse-soft" />
-            Shaping Tomorrow's Healthcare Professionals
+          <div className="mb-6 flex justify-center">
+            <BrandLogo size="hero" showImage />
           </div>
           <h1 className="text-4xl font-bold leading-tight tracking-tight text-surface-900 md:text-5xl lg:text-6xl">
             Smarter study.

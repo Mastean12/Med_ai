@@ -6,7 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata = {
-  title: "Noctual — Shaping Tomorrow's Healthcare Professionals",
+  title: "Medaitutor — Shaping Tomorrow's Healthcare Professionals",
   description:
     "Upload medical notes, generate smart flashcards, and get AI-powered Q&A with source citations.",
 };
