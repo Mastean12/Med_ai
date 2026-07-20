@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Sparkles, Menu, X, LogOut } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -26,9 +26,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 border-b border-surface-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3">
         <Link href="/" className="flex shrink-0 items-center gap-2.5" onClick={() => setMobileOpen(false)}>
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 shadow-sm">
-            <Sparkles className="h-4 w-4 text-white" />
-          </div>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-sm font-bold text-white">N</div>
           <span className="text-base font-bold tracking-tight text-surface-900">Noctual</span>
         </Link>
 

@@ -7,7 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import {
   Brain, Send, Plus, Trash2, MessageSquare,
   BookOpen, PenTool, Stethoscope,
-  Zap, HelpCircle, ChevronDown, Sparkles,
+  Zap, HelpCircle, ChevronDown,
   FileText, X, PanelLeft, PanelRight,
 } from "lucide-react";
 import { API_BASE_URL } from "@/lib/apiClient";

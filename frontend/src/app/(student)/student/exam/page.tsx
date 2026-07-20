@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
-import { PenTool, Clock, Target, TrendingUp, ChevronRight, BarChart3, Sparkles, Play, BookOpen, Zap, Brain, HelpCircle, Check, X, Heart } from "lucide-react";
+import { PenTool, Clock, Target, TrendingUp, ChevronRight, BarChart3, Play, BookOpen, Zap, Brain, HelpCircle, Check, X, Heart } from "lucide-react";
 
 import { API_BASE_URL } from "@/lib/apiClient";
 
@@ -144,7 +144,7 @@ export default function ExamPage() {
             className="rounded-lg border border-surface-200 bg-surface-50 px-3 py-2 text-sm text-surface-600 flex-1 min-w-[200px]" />
           <button onClick={generate} disabled={generating}
             className="rounded-xl bg-brand-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-700 disabled:opacity-40 flex items-center gap-2">
-            <Sparkles className="h-4 w-4" />{generating ? "Generating..." : "Start Exam"}
+            <Play className="h-4 w-4" />{generating ? "Generating..." : "Start Exam"}
           </button>
         </div>
       </motion.div>

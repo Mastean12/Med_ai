@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
   BookOpen, Star, Brain, HelpCircle, AlertTriangle,
-  ChevronDown, ChevronRight, Heart, Sparkles, Stethoscope,
+  ChevronDown, ChevronRight, Heart, Stethoscope,
   Zap, ShieldCheck, Lightbulb, Check, X, Info,
 } from "lucide-react";
 
@@ -19,7 +19,7 @@ const STYLE: Record<string, { bg: string; border: string; icon: typeof BookOpen;
   "exam focus": { bg: "bg-amber-50/70", border: "border-l-[3px] border-amber-500", icon: Star, iconColor: "text-amber-600" },
   "memory aid": { bg: "bg-purple-50/70", border: "border-l-[3px] border-purple-500", icon: Brain, iconColor: "text-purple-600" },
   "quick check": { bg: "bg-brand-50/70", border: "border-l-[3px] border-brand-500", icon: HelpCircle, iconColor: "text-brand-600" },
-  "quick summary": { bg: "bg-surface-800", border: "border border-surface-700", icon: Sparkles, iconColor: "text-brand-300", textClass: "text-surface-100" },
+  "quick summary": { bg: "bg-surface-800", border: "border border-surface-700", icon: Star, iconColor: "text-brand-300", textClass: "text-surface-100" },
   "common mistake": { bg: "bg-red-50/70", border: "border-l-[3px] border-red-500", icon: AlertTriangle, iconColor: "text-red-600" },
   "clinical pearl": { bg: "bg-accent-50/70", border: "border-l-[3px] border-accent-500", icon: Stethoscope, iconColor: "text-accent-600" },
 };
@@ -209,7 +209,7 @@ export default function ResponseCard({ content, formattedSections, className = "
       {quickSummary && (
         <div className="rounded-xl bg-surface-800 border border-surface-700 p-5">
           <div className="flex items-center gap-2 mb-2">
-            <Sparkles className="h-4 w-4 text-brand-300" />
+            <Star className="h-4 w-4 text-brand-300" />
             <span className="text-xs font-semibold text-surface-300 uppercase tracking-wide">Key Point</span>
           </div>
           <MarkdownContent text={quickSummary.body.join("\n")} className="text-surface-200 prose-headings:text-surface-100 prose-strong:text-surface-100" />

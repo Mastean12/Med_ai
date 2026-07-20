@@ -8,10 +8,10 @@ import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/context/ProfileContext";
 import { useTheme } from "@/context/ThemeContext";
 import {
-  User, Mail, Shield, Bell, Moon, Sun, Sparkles, LogOut, BookOpen,
+  User, Mail, Shield, Bell, Moon, Sun, LogOut, BookOpen,
   PenTool, Zap, Brain, HelpCircle, Monitor, Save, Check, ChevronRight,
   Trash2, Download, AlertTriangle, Globe, School, GraduationCap,
-  ArrowLeft, XCircle,
+  ArrowLeft, XCircle, CreditCard,
 } from "lucide-react";
 import { SettingsCard, FieldInput, ToggleSwitch, SelectField, LoadingSkeleton } from "@/components/SettingsCard";
 
@@ -421,7 +421,7 @@ function SettingsPage() {
                 <Link href="/account/billing"
                   className="flex items-center justify-between py-3 hover:bg-surface-50 -mx-2 px-2 rounded-lg transition-colors">
                   <div className="flex items-center gap-3">
-                    <Sparkles className="h-5 w-5 text-brand-500" />
+                    <CreditCard className="h-5 w-5 text-brand-500" />
                     <span className="text-sm text-surface-700">Manage Subscription</span>
                   </div>
                   <ChevronRight className="h-4 w-4 text-surface-300" />

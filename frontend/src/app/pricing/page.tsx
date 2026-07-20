@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import { API_BASE_URL } from "@/lib/apiClient";
 import {
-  Check, Sparkles, Crown, Shield, ArrowRight,
+  Check, Crown, Shield, ArrowRight,
   BookOpen, Brain, PenTool, BarChart3, Upload,
   GraduationCap, Users, Zap,
 } from "lucide-react";
@@ -99,10 +99,7 @@ export default function PricingPage() {
   return (
     <main className="mx-auto max-w-6xl px-6 py-16">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
-        <span className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-4 py-1.5 text-xs font-semibold text-brand-700">
-          <Sparkles className="h-3.5 w-3.5" /> AI-Powered Learning
-        </span>
-        <h1 className="mt-4 text-4xl font-bold tracking-tight text-surface-900">Choose your plan</h1>
+        <h1 className="text-4xl font-bold tracking-tight text-surface-900">Choose your plan</h1>
         <p className="mt-3 text-lg text-surface-500 max-w-2xl mx-auto">
           Start free. Upgrade when you need more power.
         </p>

@@ -11,7 +11,7 @@ import {
   LayoutDashboard, Upload, MessageSquare, Brain,
   StickyNote, PenTool, BarChart3, CreditCard,
   Settings, LogOut, Menu, X, ChevronLeft,
-  Sparkles, User,
+  User,
 } from "lucide-react";
 
 const navItems = [
@@ -53,9 +53,7 @@ export function Sidebar() {
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-3 px-4 py-5 border-b border-surface-200">
         <Link href="/" className="flex shrink-0 items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 shadow-sm">
-            <Sparkles className="h-4 w-4 text-white" />
-          </div>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-sm font-bold text-white">N</div>
           {!collapsed && <span className="text-base font-bold tracking-tight text-surface-900">Noctual</span>}
         </Link>
         <button

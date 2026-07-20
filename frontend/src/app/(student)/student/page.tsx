@@ -9,7 +9,7 @@ import { getStudentDashboard, getStudyAnalytics } from "@/lib/api";
 import {
   FileText, MessageSquare, StickyNote, Activity,
   Upload, Brain, PenTool, TrendingUp,
-  Clock, BookOpen, ChevronRight, Sparkles,
+  Clock, BookOpen, ChevronRight,
   ArrowUp, ArrowDown,
 } from "lucide-react";
 
@@ -76,11 +76,11 @@ export default function StudentDashboard() {
     return (
       <div className="flex min-h-[60vh] items-center justify-center p-8">
         <div className="w-full max-w-md rounded-2xl border border-surface-200 bg-white p-10 text-center shadow-sm">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-50 to-brand-100">
-            <Sparkles className="h-8 w-8 text-brand-600" />
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50">
+            <span className="text-2xl font-bold text-brand-600">N</span>
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-surface-900">Welcome to Noctual</h1>
-          <p className="mt-2 text-surface-500">Sign in to access your AI-powered learning dashboard.</p>
+          <p className="mt-2 text-surface-500">Sign in to access your learning dashboard.</p>
           <Link href="/login" className="mt-6 inline-flex rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-700">
             Sign in
           </Link>
@@ -235,7 +235,6 @@ export default function StudentDashboard() {
         >
           <div className="rounded-2xl border border-surface-200 bg-white p-5 shadow-sm">
             <div className="flex items-center gap-2 mb-4">
-              <Sparkles className="h-4 w-4 text-brand-500" />
               <h3 className="text-sm font-semibold text-surface-700">Learning Insights</h3>
             </div>
             <div className="space-y-3">

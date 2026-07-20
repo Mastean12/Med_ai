@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import { studentChat, listDocuments } from "@/lib/api";
 import { API_BASE_URL } from "@/lib/apiClient";
-import { MessageSquare, Send, FileText, ChevronDown, ChevronRight, BookOpen, Brain, Sparkles, ExternalLink } from "lucide-react";
+import { MessageSquare, Send, FileText, ChevronDown, ChevronRight, BookOpen, Brain, ExternalLink } from "lucide-react";
 import ResponseCard from "@/components/ResponseCard";
 
 type Source = { chunk_index: number; preview: string; similarity?: number };
@@ -134,7 +134,7 @@ export default function StudentChatPage() {
 
                     {m.response_badge && (
                       <div className={`mb-3 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold ${badgeColors[m.response_badge] || "bg-surface-50 text-surface-500 border-surface-200"}`}>
-                        {m.response_badge === "From Your Notes" ? <BookOpen className="h-3 w-3" /> : m.response_badge === "Hybrid Explanation" ? <Brain className="h-3 w-3" /> : <Sparkles className="h-3 w-3" />}
+                        {m.response_badge === "From Your Notes" ? <BookOpen className="h-3 w-3" /> : <Brain className="h-3 w-3" />}
                         {m.response_badge}
                       </div>
                     )}

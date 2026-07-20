@@ -7,7 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { getStudentDashboard, getStudyAnalytics } from "@/lib/api";
 import {
   TrendingUp, Clock, Target, BookOpen, Award,
-  BarChart3, RefreshCw, Sparkles,
+  BarChart3, RefreshCw,
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -159,7 +159,7 @@ export default function StudentProgressPage() {
             </div>
           ) : (
             <div className="py-8 text-center">
-              <Sparkles className="mx-auto h-8 w-8 text-surface-300" />
+              <BarChart3 className="mx-auto h-8 w-8 text-surface-300" />
               <p className="mt-3 text-sm text-surface-500">Review flashcards to see performance metrics.</p>
             </div>
           )}

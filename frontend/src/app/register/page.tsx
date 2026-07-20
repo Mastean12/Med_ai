@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
-import { Sparkles } from "lucide-react";
+import { UserPlus } from "lucide-react";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -38,7 +38,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-sm">
         <div className="rounded-3xl border border-surface-200 bg-white p-8 shadow-sm">
           <div className="mb-8 text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50"><Sparkles className="h-6 w-6 text-brand-600" /></div>
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50"><UserPlus className="h-6 w-6 text-brand-600" /></div>
             <h1 className="text-xl font-bold text-surface-900">Create account</h1>
             <p className="mt-1 text-sm text-surface-500">Start learning with AI</p>
           </div>

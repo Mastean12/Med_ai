@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { resetPassword } from "@/lib/auth";
-import { KeyRound } from "lucide-react";
+import { Mail } from "lucide-react";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -29,7 +29,7 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-sm">
         <div className="rounded-3xl border border-surface-200 bg-white p-8 shadow-sm">
           <div className="mb-8 text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50"><KeyRound className="h-6 w-6 text-brand-600" /></div>
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50"><Mail className="h-6 w-6 text-brand-600" /></div>
             <h1 className="text-xl font-bold text-surface-900">Reset password</h1>
             <p className="mt-1 text-sm text-surface-500">We&apos;ll send you a reset link</p>
           </div>
