@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
@@ -8,7 +8,11 @@ import { LogIn } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { signIn } = useAuth();
+  const { user, loading: authLoading, signIn } = useAuth();
+
+  useEffect(() => {
+    if (!authLoading && user) router.replace("/student");
+  }, [user, authLoading, router]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

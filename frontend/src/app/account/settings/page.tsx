@@ -223,7 +223,7 @@ function SettingsPage() {
 
   const handleSignOut = async () => {
     setLoggingOut(true);
-    try { await signOut(); } finally { setLoggingOut(false); }
+    try { await signOut(); router.push("/"); router.refresh(); } finally { setLoggingOut(false); }
   };
 
   if (!user) {
