@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from app.core.auth import get_current_user
 from app.core.supabase import supabase_admin
 
-logger = logging.getLogger("noctual.settings")
+logger = logging.getLogger("medaitutor.settings")
 
 router = APIRouter(prefix="/settings", tags=["Settings"])
 

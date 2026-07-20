@@ -19,7 +19,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [resolved, setResolved] = useState<"light" | "dark">("light");
 
   useEffect(() => {
-    const stored = localStorage.getItem("noctual_theme") as Theme | null;
+    const stored = localStorage.getItem("mt_theme") as Theme | null;
     if (stored) setThemeState(stored);
   }, []);
 
@@ -37,7 +37,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const setTheme = (t: Theme) => {
     setThemeState(t);
-    localStorage.setItem("noctual_theme", t);
+    localStorage.setItem("mt_theme", t);
   };
 
   return <ThemeContext.Provider value={{ theme, resolved, setTheme }}>{children}</ThemeContext.Provider>;

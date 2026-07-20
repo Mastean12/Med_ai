@@ -16,7 +16,7 @@ import httpx
 
 from app.core.config import settings
 
-logger = logging.getLogger("noctual.search")
+logger = logging.getLogger("medaitutor.search")
 
 DUCKDUCKGO_API = "https://api.duckduckgo.com"
 TAVILY_API = "https://api.tavily.com/search"

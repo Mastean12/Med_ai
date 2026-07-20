@@ -1,6 +1,6 @@
 import { supabase } from "./supabase";
 
-const SESSION_KEY = "noctual_session";
+const SESSION_KEY = "mt_session";
 
 export interface AuthUser {
   id: string;

@@ -18,7 +18,7 @@ logging.basicConfig(
 )
 
 app = FastAPI(
-    title="Noctual AI Backend",
+    title="Medaitutor Backend",
     docs_url="/docs" if ENV != "production" else None,
     redoc_url=None,
 )
@@ -54,7 +54,7 @@ async def log_requests(request: Request, call_next):
     start = time.time()
     response = await call_next(request)
     duration = (time.time() - start) * 1000
-    logger = logging.getLogger("noctual.access")
+    logger = logging.getLogger("medaitutor.access")
     logger.info(
         "%s %s %s [%.0fms]",
         request.method,
@@ -67,7 +67,7 @@ async def log_requests(request: Request, call_next):
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    logger = logging.getLogger("noctual.error")
+    logger = logging.getLogger("medaitutor.error")
     logger.error("Unhandled error on %s %s: %s", request.method, request.url.path, str(exc), exc_info=True)
     return JSONResponse(status_code=500, content={"detail": "Internal server error", "path": request.url.path})
 
@@ -90,7 +90,7 @@ app.include_router(stripe_router, prefix="/stripe", tags=["Stripe"])
 
 @app.get("/")
 def read_root():
-    return {"status": "ok", "message": "Noctual AI backend running"}
+    return {"status": "ok", "message": "Medaitutor backend running"}
 
 
 @app.get("/health")

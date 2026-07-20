@@ -9,7 +9,7 @@ from fastapi import HTTPException
 
 from app.core.config import settings
 
-logger = logging.getLogger("noctual.llm")
+logger = logging.getLogger("medaitutor.llm")
 
 MAX_RETRIES = 2
 RETRY_BACKOFF = 1.2

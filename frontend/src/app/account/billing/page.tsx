@@ -248,7 +248,7 @@ export default function BillingPage() {
       {!isPaid && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
           className="rounded-2xl border border-brand-200 bg-gradient-to-br from-brand-50 to-purple-50 p-6 text-center">
-          <h3 className="mt-3 text-lg font-bold text-surface-900">Unlock the full Noctual experience</h3>
+          <h3 className="mt-3 text-lg font-bold text-surface-900">Unlock the full Medaitutor experience</h3>
           <p className="mt-1 text-sm text-surface-500">Get unlimited AI tutoring, exam mode, clinical simulations, and more.</p>
           <Link href="/pricing" className="mt-4 inline-flex items-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-brand-700">
             View Plans <ArrowRight className="h-4 w-4" />

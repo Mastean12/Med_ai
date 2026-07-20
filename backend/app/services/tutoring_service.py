@@ -1,5 +1,5 @@
 """
-Noctual AI Medical Tutor — Structured, Engaging, Exam-Focused.
+Medaitutor Medical Tutor — Structured, Engaging, Exam-Focused.
 
 Response lengths: concise (high-yield only) | normal (balanced) | detailed (full)
 
@@ -18,7 +18,7 @@ from app.core.supabase import supabase_admin
 from app.services.llm_service import generate_llm_response
 from app.services.response_formatter import format_response
 
-logger = logging.getLogger("noctual.tutor")
+logger = logging.getLogger("medaitutor.tutor")
 
 TutoringMode = str
 ResponseLength = str

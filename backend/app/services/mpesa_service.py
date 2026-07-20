@@ -15,7 +15,7 @@ from fastapi import HTTPException
 
 from app.core.config import settings
 
-logger = logging.getLogger("noctual.mpesa")
+logger = logging.getLogger("medaitutor.mpesa")
 
 MPESA_AUTH_URL = {
     "sandbox": "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials",
@@ -62,7 +62,7 @@ async def stk_push(
     user_id: str,
     phone_number: str,
     amount: int,
-    account_reference: str = "Noctual AI",
+    account_reference: str = "Medaitutor",
     transaction_desc: str = "Subscription",
 ) -> Dict[str, Any]:
     """

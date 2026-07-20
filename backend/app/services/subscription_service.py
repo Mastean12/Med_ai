@@ -12,7 +12,7 @@ from fastapi import HTTPException
 from app.core.supabase import supabase_admin
 from app.core.plans import PlanTier, PlanStatus, PaymentProvider
 
-logger = logging.getLogger("noctual.subscriptions")
+logger = logging.getLogger("medaitutor.subscriptions")
 
 
 async def get_subscription(user_id: str) -> Dict[str, Any]:

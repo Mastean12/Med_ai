@@ -1,5 +1,5 @@
 """
-Noctual AI — Professional Exam Engine.
+Medaitutor — Professional Exam Engine.
 
 Generates board-style medical questions with structured clinical
 reasoning explanations. Supports 6 exam modes, adaptive difficulty,
@@ -17,7 +17,7 @@ from fastapi import HTTPException
 from app.core.supabase import supabase_admin
 from app.services.llm_service import generate_llm_json
 
-logger = logging.getLogger("noctual.exam")
+logger = logging.getLogger("medaitutor.exam")
 
 BEGINNER = "beginner"
 EXAM_PREP = "exam_prep"

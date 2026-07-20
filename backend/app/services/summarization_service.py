@@ -17,7 +17,7 @@ from fastapi import HTTPException
 from app.core.supabase import supabase_admin
 from app.services.llm_service import generate_llm_response
 
-logger = logging.getLogger("noctual.summaries")
+logger = logging.getLogger("medaitutor.summaries")
 
 SUMMARY_PROMPTS = {
     "concise": """You are creating a CONCISE summary of medical study notes.

@@ -8,7 +8,7 @@ from fastapi import HTTPException
 from app.core.supabase import supabase_admin
 from app.services.llm_service import generate_llm_response, generate_llm_json
 
-logger = logging.getLogger("noctual.flashcards")
+logger = logging.getLogger("medaitutor.flashcards")
 
 MEDICAL_HINTS = {
     "disease", "condition", "symptom", "sign", "symptoms", "signs",

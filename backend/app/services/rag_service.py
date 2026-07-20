@@ -19,7 +19,7 @@ from app.services.embeddings_service import embed_text
 from app.services.llm_service import generate_llm_response, generate_llm_json
 from app.services.response_formatter import format_response
 
-logger = logging.getLogger("noctual.rag")
+logger = logging.getLogger("medaitutor.rag")
 
 GROUNDED_SYSTEM_PROMPT = """You are a medical tutor helping a student. Answer based on their uploaded notes.
 

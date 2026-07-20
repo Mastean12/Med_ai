@@ -13,7 +13,7 @@ from app.core.auth import get_current_user, get_optional_user
 from app.core.security import get_user_role, require_admin
 from app.schemas.auth import AuthUserOut, SessionStatusOut
 
-logger = logging.getLogger("noctual.auth_router")
+logger = logging.getLogger("medaitutor.auth_router")
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 

@@ -79,7 +79,7 @@ export default function StudentDashboard() {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50">
             <span className="text-2xl font-bold text-brand-600">N</span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-surface-900">Welcome to Noctual</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-surface-900">Welcome to Medaitutor</h1>
           <p className="mt-2 text-surface-500">Sign in to access your learning dashboard.</p>
           <Link href="/login" className="mt-6 inline-flex rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-700">
             Sign in

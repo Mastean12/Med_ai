@@ -13,7 +13,7 @@ from fastapi import HTTPException
 from app.core.supabase import supabase_admin
 from app.services.llm_service import generate_llm_response
 
-logger = logging.getLogger("noctual.simplification")
+logger = logging.getLogger("medaitutor.simplification")
 
 
 SIMPLIFY_SYSTEM_PROMPT = """You are a medical educator specializing in simplifying complex concepts for students.

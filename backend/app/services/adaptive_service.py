@@ -14,7 +14,7 @@ from fastapi import HTTPException
 from app.core.supabase import supabase_admin
 from app.services.llm_service import generate_llm_response
 
-logger = logging.getLogger("noctual.adaptive")
+logger = logging.getLogger("medaitutor.adaptive")
 
 
 async def get_learning_profile(user_id: str) -> Dict[str, Any]:

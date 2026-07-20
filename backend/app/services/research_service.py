@@ -25,9 +25,9 @@ from app.core.supabase import supabase_admin
 from app.services.llm_service import generate_llm_response, generate_llm_json
 from app.services.web_search import web_search, medical_search
 
-logger = logging.getLogger("noctual.research")
+logger = logging.getLogger("medaitutor.research")
 
-RESEARCH_SYSTEM_PROMPT = """You are a medical research analyst for Noctual AI. Your job is to synthesize information from multiple sources into comprehensive, well-structured research reports for medical students and professionals.
+RESEARCH_SYSTEM_PROMPT = """You are a medical research analyst for Medaitutor. Your job is to synthesize information from multiple sources into comprehensive, well-structured research reports for medical students and professionals.
 
 ## Research Standards
 - Be thorough but concise. Prioritize clinically relevant information.

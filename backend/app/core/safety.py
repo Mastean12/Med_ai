@@ -8,7 +8,7 @@ Detects emergency keywords, self-harm indicators, and abuse patterns.
 import re
 import logging
 
-logger = logging.getLogger("noctual.safety")
+logger = logging.getLogger("medaitutor.safety")
 
 EMERGENCY_KEYWORDS = [
     "chest pain", "trouble breathing", "fainting", "seizure",

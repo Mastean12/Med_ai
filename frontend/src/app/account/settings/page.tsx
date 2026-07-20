@@ -327,7 +327,7 @@ function SettingsPage() {
           {exportUrl && (
             <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 flex items-center justify-between">
               <span>Your data is ready for download.</span>
-              <a href={exportUrl} download="noctual-export.json"
+              <a href={exportUrl} download="medaitutor-export.json"
                 className="rounded-lg bg-green-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-700">
                 Download
               </a>
@@ -355,7 +355,7 @@ function SettingsPage() {
 
           {activeSection === "appearance" && (
             <motion.div key="appearance" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-              <SettingsCard title="Appearance" desc="Customize how Noctual looks to you." icon={Monitor}>
+              <SettingsCard title="Appearance" desc="Customize how Medaitutor looks to you." icon={Monitor}>
                 <div className="flex items-center justify-between py-3">
                   <div className="flex items-center gap-3">
                     <Moon className="h-5 w-5 text-surface-400" />
@@ -447,7 +447,7 @@ function SettingsPage() {
 
               <button onClick={handleSignOut} disabled={loggingOut}
                 className="flex w-full items-center gap-3 rounded-2xl border border-red-200 bg-white px-6 py-4 text-left text-sm font-medium text-red-600 shadow-sm transition-colors hover:bg-red-50 disabled:opacity-50">
-                <LogOut className="h-5 w-5" />{loggingOut ? "Signing out..." : "Sign out of Noctual"}
+                <LogOut className="h-5 w-5" />{loggingOut ? "Signing out..." : "Sign out of Medaitutor"}
               </button>
             </motion.div>
           )}

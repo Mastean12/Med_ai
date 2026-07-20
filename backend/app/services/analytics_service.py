@@ -13,7 +13,7 @@ from fastapi import HTTPException
 
 from app.core.supabase import supabase_admin
 
-logger = logging.getLogger("noctual.analytics")
+logger = logging.getLogger("medaitutor.analytics")
 
 
 async def get_study_analytics(user_id: str) -> Dict[str, Any]:

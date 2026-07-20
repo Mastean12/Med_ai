@@ -14,7 +14,7 @@ function MainContent({ children }: { children: React.ReactNode }) {
       <footer className="border-t border-surface-200 bg-white">
         <div className="px-6 py-4 text-center">
           <p className="text-xs text-surface-400">
-            &copy; {new Date().getFullYear()} Noctual AI. All rights reserved.
+            &copy; {new Date().getFullYear()} Medaitutor. All rights reserved.
           </p>
         </div>
       </footer>

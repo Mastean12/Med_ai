@@ -19,7 +19,7 @@ from app.services.stripe_service import (
 from app.services.mpesa_service import stk_push, process_callback
 from app.services.usage_service import get_usage_summary
 
-logger = logging.getLogger("noctual.billing_router")
+logger = logging.getLogger("medaitutor.billing_router")
 
 router = APIRouter(tags=["Billing"])
 stripe_router = APIRouter(tags=["Stripe"])
@@ -94,7 +94,7 @@ async def mpesa_stk_push(payload: StkPushIn, user=Depends(get_current_user)):
         user_id=user["id"],
         phone_number=payload.phone_number,
         amount=payload.amount,
-        account_reference=f"Noctual-{payload.plan}",
+        account_reference=f"MT-{payload.plan}",
         transaction_desc="Subscription",
     )
 

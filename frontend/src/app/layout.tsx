@@ -14,7 +14,7 @@ export const metadata = {
 const themeScript = `
 (function() {
   try {
-    var t = localStorage.getItem("noctual_theme");
+    var t = localStorage.getItem("mt_theme");
     var m = window.matchMedia("(prefers-color-scheme: dark)");
     var isDark = t === "dark" || (t !== "light" && m.matches);
     if (isDark) document.documentElement.classList.add("dark");

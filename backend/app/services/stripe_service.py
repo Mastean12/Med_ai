@@ -10,7 +10,7 @@ from app.core.plans import PlanTier, PlanStatus, PaymentProvider, PRICE_ID_MAP
 from app.core.supabase import supabase_admin
 from app.services.subscription_service import get_subscription, upsert_subscription
 
-logger = logging.getLogger("noctual.stripe")
+logger = logging.getLogger("medaitutor.stripe")
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 

@@ -12,7 +12,7 @@ import logging
 from typing import Dict, Any, List, Optional
 from dataclasses import dataclass, asdict
 
-logger = logging.getLogger("noctual.formatter")
+logger = logging.getLogger("medaitutor.formatter")
 
 
 # ================================================================

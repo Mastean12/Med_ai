@@ -14,9 +14,9 @@ from typing import Optional
 from app.core.safety import public_health_guardrails
 from app.services.llm_service import generate_llm_response
 
-logger = logging.getLogger("noctual.public_health")
+logger = logging.getLogger("medaitutor.public_health")
 
-PUBLIC_HEALTH_SYSTEM_PROMPT = """You are a general health information assistant for the Noctual AI platform. Your role is to provide educational health information — NOT medical diagnosis or treatment recommendations.
+PUBLIC_HEALTH_SYSTEM_PROMPT = """You are a general health information assistant for the Medaitutor platform. Your role is to provide educational health information — NOT medical diagnosis or treatment recommendations.
 
 ## ABSOLUTE RULES (violate these and you will harm users):
 

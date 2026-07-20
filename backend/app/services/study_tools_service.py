@@ -14,7 +14,7 @@ from fastapi import HTTPException
 
 from app.core.supabase import supabase_admin
 
-logger = logging.getLogger("noctual.study")
+logger = logging.getLogger("medaitutor.study")
 
 
 def sm2(

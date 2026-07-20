@@ -16,7 +16,7 @@ export default function Hero() {
             <span className="bg-gradient-to-r from-brand-600 to-purple-600 bg-clip-text text-transparent">Better patient outcomes.</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-surface-500">
-            Noctual AI transforms your medical notes into interactive flashcards and AI-powered Q&A sessions. Built for students, designed for everyone.
+            Medaitutor transforms your medical notes into interactive flashcards and AI-powered Q&A sessions. Built for students, designed for everyone.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link href="/register" className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-600 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-brand-600/25 transition-all hover:bg-brand-700 hover:shadow-xl hover:shadow-brand-600/30 sm:w-auto">

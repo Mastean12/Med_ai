@@ -18,7 +18,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.core.supabase import supabase_anon
 from app.core.config import settings
 
-logger = logging.getLogger("noctual.auth")
+logger = logging.getLogger("medaitutor.auth")
 
 bearer = HTTPBearer(auto_error=False)
 

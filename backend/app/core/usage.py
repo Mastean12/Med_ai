@@ -5,7 +5,7 @@ from app.core.config import FREE_DAILY_AI_LIMIT
 from app.core.supabase import supabase_admin
 from app.services.billing_service import is_paid_user
 
-logger = logging.getLogger("noctual.usage")
+logger = logging.getLogger("medaitutor.usage")
 
 def enforce_ai_usage(user_id: str):
     """

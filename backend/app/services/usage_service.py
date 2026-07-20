@@ -16,7 +16,7 @@ from app.core.plans import (
 )
 from app.services.subscription_service import get_active_plan
 
-logger = logging.getLogger("noctual.usage")
+logger = logging.getLogger("medaitutor.usage")
 
 
 def _current_period() -> tuple[date, date]:
