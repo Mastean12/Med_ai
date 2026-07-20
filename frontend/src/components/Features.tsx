@@ -3,7 +3,7 @@
 import {
   Upload, MessageSquare, Brain, StickyNote,
   PenTool, BarChart3, BookOpen, Shield,
-  Search, HeartPulse, Sparkles,
+  Search, HeartPulse,
 } from "lucide-react";
 
 const features = [
@@ -61,8 +61,8 @@ export default function Features() {
 
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-2xl text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-4 py-1.5 text-xs font-semibold text-brand-700">
-            <Sparkles className="h-3 w-3" /> Features
+          <span className="inline-flex rounded-full border border-purple-200 bg-purple-50 px-4 py-1.5 text-xs font-semibold text-purple-700">
+            Features
           </span>
           <h2 className="mt-4 text-4xl font-bold tracking-tight text-surface-900 md:text-5xl">
             Everything you need to excel
@@ -80,7 +80,7 @@ export default function Features() {
                 key={f.title}
                 className="group rounded-2xl border border-surface-200 bg-white p-6 transition-all hover:shadow-lg hover:shadow-brand-500/5 hover:-translate-y-0.5"
               >
-                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-50 to-purple-50 text-brand-600 transition-colors">
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-[#5B5CEB]/10 to-[#8B5CF6]/10 text-[#5B5CEB] transition-colors">
                   <Icon className="h-5 w-5" />
                 </div>
                 <h3 className="text-base font-semibold text-surface-800">{f.title}</h3>
