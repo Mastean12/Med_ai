@@ -173,7 +173,7 @@ async def generate_exam(
 async def submit_answers(user_id: str, attempt_id: str, answers: List[Dict[str, str]]) -> Dict[str, Any]:
     sb = supabase_admin()
     try:
-        attempt = sb.table("exam_attempts").select("*").eq("id", attempt_id).eq("user_id", user_id).single().execute()
+        attempt = sb.table("exam_attempts").select("*").eq("id", attempt_id).eq("user_id", user_id).maybe_single().execute()
         if not attempt.data: raise HTTPException(status_code=404, detail="Attempt not found")
     except HTTPException: raise
     except Exception: raise HTTPException(status_code=404, detail="Attempt not found")
@@ -183,7 +183,7 @@ async def submit_answers(user_id: str, attempt_id: str, answers: List[Dict[str, 
     for ans in answers:
         qid = ans.get("question_id"); selected = ans.get("answer", "").upper().strip()
         try:
-            q = sb.table("quiz_questions").select("correct_answer,explanation,topic,difficulty").eq("id", qid).single().execute()
+            q = sb.table("quiz_questions").select("correct_answer,explanation,topic,difficulty").eq("id", qid).maybe_single().execute()
             if not q.data: continue
             correct = selected == q.data["correct_answer"]
             if correct: correct_count += 1
@@ -232,7 +232,7 @@ async def get_exam_history(user_id: str) -> Dict[str, Any]:
 async def get_exam_result(user_id: str, attempt_id: str) -> Dict[str, Any]:
     sb = supabase_admin()
     try:
-        a = sb.table("exam_attempts").select("*").eq("id", attempt_id).eq("user_id", user_id).single().execute()
+        a = sb.table("exam_attempts").select("*").eq("id", attempt_id).eq("user_id", user_id).maybe_single().execute()
         if not a.data: raise HTTPException(status_code=404, detail="Attempt not found")
         questions = sb.table("quiz_questions").select("*").eq("attempt_id", attempt_id).execute()
         answers = sb.table("quiz_answers").select("*").eq("attempt_id", attempt_id).execute()

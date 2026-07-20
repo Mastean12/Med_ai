@@ -166,12 +166,12 @@ async def export_data(user=Depends(get_current_user)):
     sb = supabase_admin()
     uid = user["id"]
     try:
-        profile = sb.table("user_profiles").select("*").eq("user_id", uid).single().execute()
+        profile = sb.table("user_profiles").select("*").eq("user_id", uid).maybe_single().execute()
         sessions = sb.table("chat_sessions").select("id,title,mode,created_at").eq("user_id", uid).order("created_at", desc=True).execute()
         session_ids = [s["id"] for s in (sessions.data or [])]
         messages = []
         if session_ids:
-            msgs = sb.table("chat_messages").select("role,content,created_at").in_("session_id", session_ids).order("created_at", asc=True).execute()
+            msgs = sb.table("chat_messages").select("role,content,created_at").in_("session_id", session_ids).order("created_at").execute()
             messages = msgs.data or []
         return {
             "exported_at": datetime.now(timezone.utc).isoformat(),

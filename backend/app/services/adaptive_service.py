@@ -124,7 +124,7 @@ async def get_mastery_summary(user_id: str) -> Dict[str, Any]:
             sb.table("topic_mastery")
             .select("*")
             .eq("user_id", user_id)
-            .order("mastery_score", asc=True)
+            .order("mastery_score")
             .execute()
         )
         topics = res.data or []
