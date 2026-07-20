@@ -1,26 +1,26 @@
 "use client";
 
-import { Upload, Brain, GraduationCap, Sparkles, ArrowRight } from "lucide-react";
+import { Upload, Brain, GraduationCap, ArrowRight } from "lucide-react";
 
 const steps = [
   {
     number: "01",
     title: "Upload Your Notes",
-    desc: "Drop PDFs of your textbooks, lecture slides, or study guides. Text is extracted and indexed instantly.",
+    desc: "Upload PDFs of your textbooks, lecture slides, or study guides. We'll process everything and prepare it for learning.",
     icon: Upload,
     gradient: "from-[#5B5CEB] to-[#7C3AED]",
   },
   {
     number: "02",
     title: "AI Processes Content",
-    desc: "Your notes are chunked, embedded, and stored securely. Flashcards, summaries, and practice questions are auto-generated.",
+    desc: "Your materials are transformed into smart flashcards, summaries, and practice questions — tailored to your curriculum.",
     icon: Brain,
     gradient: "from-[#7C3AED] to-[#8B5CF6]",
   },
   {
     number: "03",
     title: "Learn & Master",
-    desc: "Review smart flashcards, take AI-generated exams, chat with your tutor, and track your progress over time.",
+    desc: "Review flashcards, take AI-generated exams, chat with your tutor, and track your progress — all in one place.",
     icon: GraduationCap,
     gradient: "from-[#8B5CF6] to-[#5B5CEB]",
   },
@@ -43,7 +43,7 @@ export default function HowItWorks() {
         {/* Header */}
         <div className="mx-auto max-w-2xl text-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-purple-200 bg-purple-50 px-4 py-1.5 text-xs font-semibold text-purple-700">
-            <Sparkles className="h-3 w-3" /> How It Works
+            How It Works
           </span>
           <h2 className="mt-4 text-4xl font-bold tracking-tight text-surface-900 md:text-5xl">
             From PDF to mastery in{" "}
