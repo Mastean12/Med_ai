@@ -429,6 +429,7 @@ async def tutor_chat_streaming(
         except: pass
 
         yield f"__SECTIONS__:{json.dumps(formatted.get('sections', []))}"
+        yield f"__SESSION_ID__:{session_id}"
 
     except HTTPException as e:
         yield f"Error: {e.detail if e.detail else 'Service unavailable'}"

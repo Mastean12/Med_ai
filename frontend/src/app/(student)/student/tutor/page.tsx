@@ -120,6 +120,7 @@ export default function TutorPage() {
       if (!reader) throw new Error("No stream");
 
       let fullResponse = "";
+      let streamSessionId: string | null = null;
       const decoder = new TextDecoder();
       setMessages((m) => [...m, { role: "assistant", content: "" }]);
 
@@ -148,6 +149,12 @@ export default function TutorPage() {
               continue;
             }
 
+            if (text.startsWith("__SESSION_ID__:")) {
+              streamSessionId = text.slice("__SESSION_ID__:".length);
+              setSessionId(streamSessionId);
+              continue;
+            }
+
             fullResponse += text;
             setMessages((m) => {
               const copy = [...m];
@@ -161,16 +168,8 @@ export default function TutorPage() {
         }
       }
 
-      if (!sessionId) {
+      if (streamSessionId) {
         loadSessions();
-        const token2 = await getToken();
-        if (token2) {
-          const sessionsRes = await fetch(`${API_BASE_URL}/tutor/sessions`, { headers: { Authorization: `Bearer ${token2}` } });
-          if (sessionsRes.ok) {
-            const data = await sessionsRes.json();
-            if (data.sessions?.length > 0) setSessionId(data.sessions[0].id);
-          }
-        }
       }
     } catch {
       setMessages((m) => [...m, { role: "assistant", content: "Sorry, something went wrong. Please try again." }]);
