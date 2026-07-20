@@ -289,17 +289,21 @@ async def list_sessions(user_id: str) -> Dict[str, Any]:
 async def get_session(user_id: str, session_id: str) -> Dict[str, Any]:
     sb = supabase_admin()
     try:
-        s = sb.table("chat_sessions").select("*").eq("id", session_id).eq("user_id", user_id).single().execute()
-        if not s.data: raise HTTPException(status_code=404, detail="Session not found")
+        s = sb.table("chat_sessions").select("*").eq("id", session_id).eq("user_id", user_id).maybe_single().execute()
+        if not s.data:
+            raise HTTPException(status_code=404, detail="Session not found")
         msgs = sb.table("chat_messages").select("*").eq("session_id", session_id).order("created_at", asc=True).execute()
         return {"session": s.data, "messages": msgs.data or []}
-    except HTTPException: raise
-    except Exception as e: raise HTTPException(status_code=500, detail=f"Failed: {e}")
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error("get_session failed for user=%s session=%s: %s", user_id, session_id, str(e))
+        raise HTTPException(status_code=500, detail="Failed to load session")
 
 async def delete_session(user_id: str, session_id: str) -> Dict[str, Any]:
     sb = supabase_admin()
     try:
-        c = sb.table("chat_sessions").select("id").eq("id", session_id).eq("user_id", user_id).single().execute()
+        c = sb.table("chat_sessions").select("id").eq("id", session_id).eq("user_id", user_id).maybe_single().execute()
         if not c.data: raise HTTPException(status_code=404, detail="Session not found")
         sb.table("chat_sessions").delete().eq("id", session_id).execute()
         return {"deleted": session_id}
@@ -334,7 +338,7 @@ async def tutor_chat(
         session = await create_session(user_id, message[:80] + ("..." if len(message) > 80 else ""), mode)
         session_id = session["id"]
     else:
-        c = sb.table("chat_sessions").select("id,mode").eq("id",session_id).eq("user_id",user_id).single().execute()
+        c = sb.table("chat_sessions").select("id,mode").eq("id",session_id).eq("user_id",user_id).maybe_single().execute()
         if not c.data: session = await create_session(user_id, message[:80], mode); session_id = session["id"]
         elif c.data.get("mode") != mode:
             try: sb.table("chat_sessions").update({"mode": mode}).eq("id", session_id).execute()
