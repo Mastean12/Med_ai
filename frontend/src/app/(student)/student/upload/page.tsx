@@ -35,8 +35,16 @@ export default function UploadPage() {
     e.preventDefault();
     setDragOver(false);
     const f = e.dataTransfer.files[0];
-    if (f && f.name.toLowerCase().endsWith(".pdf")) setFile(f);
-    else setMsg("Only PDF files are supported"); setMsgType("error");
+    if (f) {
+      const name = f.name.toLowerCase();
+      if (name.endsWith(".pdf") || name.endsWith(".docx") || name.endsWith(".txt")) {
+        setFile(f);
+        setMsg(""); setMsgType("");
+      } else {
+        setMsg("Supported formats: PDF, DOCX, TXT");
+        setMsgType("error");
+      }
+    }
   }, []);
 
   const onUpload = async () => {
@@ -94,7 +102,7 @@ export default function UploadPage() {
     <main className="mx-auto max-w-4xl px-6 py-8">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-surface-900">Upload Notes</h1>
-        <p className="mt-1 text-sm text-surface-500">Add PDFs to your study library for AI-powered learning.</p>
+        <p className="mt-1 text-sm text-surface-500">Add PDFs, Word documents, or text files to your study library.</p>
       </div>
 
       <div
@@ -105,17 +113,17 @@ export default function UploadPage() {
       >
         <input
           type="file"
-          accept="application/pdf"
+          accept=".pdf,.docx,.txt"
           className="hidden"
           id="file-input"
-          onChange={(e) => { const f = e.target.files?.[0]; if (f) setFile(f); }}
+          onChange={(e) => { const f = e.target.files?.[0]; if (f) { setFile(f); setMsg(""); setMsgType(""); } }}
         />
         <label htmlFor="file-input" className="cursor-pointer">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50 text-3xl transition-transform hover:scale-105">📤</div>
           <p className="text-base font-semibold text-surface-700">
-            {file ? file.name : "Drag your PDF here or click to browse"}
+            {file ? file.name : "Drag your file here or click to browse"}
           </p>
-          <p className="mt-2 text-sm text-surface-400">Only PDF files supported</p>
+          <p className="mt-2 text-sm text-surface-400">Supports PDF, DOCX, and TXT</p>
         </label>
 
         {file && (
@@ -145,7 +153,7 @@ export default function UploadPage() {
         {file && (
           <button onClick={onUpload} disabled={uploading}
             className="mt-6 inline-flex rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-700 disabled:opacity-40">
-            {uploading ? "Uploading..." : "Upload PDF"}
+            {uploading ? "Uploading..." : "Upload Document"}
           </button>
         )}
       </div>
@@ -162,7 +170,7 @@ export default function UploadPage() {
           <div className="rounded-2xl border border-dashed border-surface-300 bg-white px-6 py-12 text-center">
             <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-surface-100 text-xl">📭</div>
             <p className="text-sm font-medium text-surface-500">No documents yet</p>
-            <p className="mt-1 text-xs text-surface-400">Upload your first PDF above to get started.</p>
+            <p className="mt-1 text-xs text-surface-400">Upload a PDF, DOCX, or TXT file to get started.</p>
           </div>
         ) : (
           <div className="space-y-2">
