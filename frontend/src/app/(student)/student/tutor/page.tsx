@@ -42,6 +42,8 @@ export default function TutorPage() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [sessionLoading, setSessionLoading] = useState(false);
+  const [sessionError, setSessionError] = useState("");
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [streaming, setStreaming] = useState(false);
@@ -72,8 +74,10 @@ export default function TutorPage() {
   }, []);
 
   const loadSession = useCallback(async (sid: string) => {
+    setSessionLoading(true);
+    setSessionError("");
     const token = await getToken();
-    if (!token) return;
+    if (!token) { setSessionLoading(false); setSessionError("Please sign in again."); return; }
     try {
       const res = await fetch(`${API_BASE_URL}/tutor/session/${sid}`, { headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) {
@@ -81,8 +85,14 @@ export default function TutorPage() {
         setMessages(data.messages || []);
         setSessionId(sid);
         if (data.session?.mode) setMode(data.session.mode);
+      } else {
+        setSessionError(`Failed to load session (${res.status})`);
       }
-    } catch {}
+    } catch {
+      setSessionError("Network error loading session.");
+    } finally {
+      setSessionLoading(false);
+    }
   }, []);
 
   const loadDocuments = useCallback(async () => {
@@ -179,7 +189,7 @@ export default function TutorPage() {
     }
   };
 
-  const newSession = () => { setSessionId(null); setMessages([]); inputRef.current?.focus(); };
+  const newSession = () => { setSessionId(null); setMessages([]); setSessionError(""); inputRef.current?.focus(); };
   const deleteSession = async (sid: string) => {
     const token = await getToken();
     if (!token) return;
@@ -223,14 +233,18 @@ export default function TutorPage() {
               <PanelLeft className="h-4 w-4" />
             </button>
           </div>
+          {sessionError && (
+            <div className="p-3 text-xs text-red-600 bg-red-50 border-b border-red-100">{sessionError}</div>
+          )}
           <div className="flex-1 overflow-y-auto p-2 space-y-1">
             {sessions.map((s) => (
               <div key={s.id} className="group flex items-center gap-1">
                 <button
                   onClick={() => loadSession(s.id)}
+                  disabled={sessionLoading}
                   className={`flex-1 truncate rounded-lg px-3 py-2 text-left text-sm transition-colors ${
                     sessionId === s.id ? "bg-brand-50 text-brand-700 font-medium" : "text-surface-600 hover:bg-surface-50"
-                  }`}
+                  } ${sessionLoading ? "opacity-50" : ""}`}
                 >
                   <div className="flex items-center gap-2">
                     <MessageSquare className="h-3.5 w-3.5 shrink-0" />
