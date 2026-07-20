@@ -292,7 +292,7 @@ async def get_session(user_id: str, session_id: str) -> Dict[str, Any]:
         s = sb.table("chat_sessions").select("*").eq("id", session_id).eq("user_id", user_id).maybe_single().execute()
         if not s.data:
             raise HTTPException(status_code=404, detail="Session not found")
-        msgs = sb.table("chat_messages").select("*").eq("session_id", session_id).order("created_at", asc=True).execute()
+        msgs = sb.table("chat_messages").select("*").eq("session_id", session_id).order("created_at").execute()
         return {"session": s.data, "messages": msgs.data or []}
     except HTTPException:
         raise
@@ -349,7 +349,7 @@ async def tutor_chat(
 
     history = []
     try:
-        msgs = sb.table("chat_messages").select("role,content").eq("session_id",session_id).order("created_at", asc=True).execute()
+        msgs = sb.table("chat_messages").select("role,content").eq("session_id",session_id).order("created_at").execute()
         for m in (msgs.data or [])[-16:]: history.append({"role": m["role"], "content": m["content"]})
     except: pass
 
@@ -404,7 +404,7 @@ async def tutor_chat_streaming(
 
         history = []
         try:
-            msgs = sb.table("chat_messages").select("role,content").eq("session_id",session_id).order("created_at",asc=True).execute()
+            msgs = sb.table("chat_messages").select("role,content").eq("session_id",session_id).order("created_at").execute()
             for m in (msgs.data or [])[-16:]: history.append({"role":m["role"],"content":m["content"]})
         except: pass
 
