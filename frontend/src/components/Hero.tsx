@@ -50,15 +50,16 @@ export default function Hero() {
             <p className="mt-6 text-sm text-surface-400">No credit card required. 10 free AI interactions daily.</p>
           </div>
 
-          {/* Right: Premium Illustration */}
+          {/* Right: Hero Image */}
           <div className="relative" aria-hidden="true">
-            <div className="w-full max-w-lg mx-auto lg:mx-0">
+            <div className="relative w-full overflow-hidden rounded-2xl shadow-xl shadow-brand-500/10 border border-surface-200">
               <img
-                src="/hero-illustration.svg"
-                alt="Medical student using AI-powered learning platform with holographic medical elements"
-                className="w-full h-auto"
+                src="/hero-medical-ai-student.jpg"
+                alt="Medical student using AI-powered learning platform"
+                className="w-full h-auto block"
                 loading="eager"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />
             </div>
           </div>
         </div>
