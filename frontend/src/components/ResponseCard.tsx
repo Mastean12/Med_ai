@@ -25,7 +25,7 @@ const STYLE: Record<string, { bg: string; border: string; icon: typeof BookOpen;
 };
 
 function matchStyle(heading: string) {
-  const lower = heading.toLowerCase().replace(/s$/, "").replace(/\?$/, "").replace(/-/g, " ");
+  const lower = heading.toLowerCase().replace(/\?$/, "").replace(/-/g, " ");
   for (const [key, style] of Object.entries(STYLE)) {
     if (lower.includes(key)) return style;
   }
