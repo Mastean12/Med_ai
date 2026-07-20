@@ -42,7 +42,7 @@ async def _get_or_create_counter(
             .eq("user_id", user_id)
             .eq("feature", feature.value)
             .eq("period_start", period_start.isoformat())
-            .single()
+            .maybe_single()
             .execute()
         )
         if res.data:

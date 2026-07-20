@@ -25,7 +25,7 @@ async def get_learning_profile(user_id: str) -> Dict[str, Any]:
             sb.table("learning_profiles")
             .select("*")
             .eq("user_id", user_id)
-            .single()
+            .maybe_single()
             .execute()
         )
         if res.data:
@@ -68,7 +68,7 @@ async def update_topic_mastery(
             .select("*")
             .eq("user_id", user_id)
             .eq("topic", topic)
-            .single()
+            .maybe_single()
             .execute()
         )
     except Exception:

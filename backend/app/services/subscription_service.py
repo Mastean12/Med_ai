@@ -23,7 +23,7 @@ async def get_subscription(user_id: str) -> Dict[str, Any]:
             sb.table("subscriptions")
             .select("*")
             .eq("user_id", user_id)
-            .single()
+            .maybe_single()
             .execute()
         )
         if res.data:
@@ -84,7 +84,7 @@ async def upsert_subscription(
             sb.table("subscriptions")
             .select("id")
             .eq("user_id", user_id)
-            .single()
+            .maybe_single()
             .execute()
         )
 

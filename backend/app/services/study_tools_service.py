@@ -364,7 +364,7 @@ async def end_study_session(
             .select("started_at")
             .eq("id", session_id)
             .eq("owner_id", user_id)
-            .single()
+            .maybe_single()
             .execute()
         )
 
