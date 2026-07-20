@@ -77,7 +77,7 @@ class PreferencesUpdate(BaseModel):
 async def get_profile(user=Depends(get_current_user)):
     sb = supabase_admin()
     try:
-        res = sb.table("user_profiles").select("*").eq("user_id", user["id"]).single().execute()
+        res = sb.table("user_profiles").select("*").eq("user_id", user["id"]).maybe_single().execute()
         if res.data:
             return {"profile": res.data}
     except Exception as exc:
@@ -100,7 +100,7 @@ async def update_profile(payload: ProfileUpdate, user=Depends(get_current_user))
     updates["updated_at"] = datetime.now(timezone.utc).isoformat()
 
     try:
-        existing = sb.table("user_profiles").select("id").eq("user_id", user["id"]).single().execute()
+        existing = sb.table("user_profiles").select("id").eq("user_id", user["id"]).maybe_single().execute()
         if existing.data:
             sb.table("user_profiles").update(updates).eq("user_id", user["id"]).execute()
         else:
@@ -120,7 +120,7 @@ async def update_preferences(payload: PreferencesUpdate, user=Depends(get_curren
         return {"updated": False}
 
     try:
-        existing = sb.table("user_profiles").select("id,preferences").eq("user_id", user["id"]).single().execute()
+        existing = sb.table("user_profiles").select("id,preferences").eq("user_id", user["id"]).maybe_single().execute()
         current_prefs = (existing.data.get("preferences") or {}) if existing.data else {}
         merged = {**current_prefs, **prefs}
 
