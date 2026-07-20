@@ -54,7 +54,7 @@ export function Sidebar() {
       <div className="flex items-center gap-3 px-4 py-5 border-b border-surface-200">
         <Link href="/" className="flex shrink-0 items-center gap-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-sm font-bold text-white">N</div>
-          {!collapsed && <span className="text-base font-bold tracking-tight text-surface-900">Noctual</span>}
+          {!collapsed && <span className="text-base font-bold tracking-tight text-surface-900">Medaitutor</span>}
         </Link>
         <button
           onClick={() => setCollapsed(!collapsed)}

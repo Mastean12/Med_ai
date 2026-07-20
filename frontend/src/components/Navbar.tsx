@@ -27,7 +27,7 @@ export default function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3">
         <Link href="/" className="flex shrink-0 items-center gap-2.5" onClick={() => setMobileOpen(false)}>
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-sm font-bold text-white">N</div>
-          <span className="text-base font-bold tracking-tight text-surface-900">Noctual</span>
+          <span className="text-base font-bold tracking-tight text-surface-900">Medaitutor</span>
         </Link>
 
         <nav className="hidden items-center gap-4 md:flex">
