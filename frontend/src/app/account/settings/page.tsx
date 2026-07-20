@@ -264,6 +264,18 @@ function SettingsPage() {
 
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-2xl space-y-6 p-6 lg:p-8">
+          {/* Mobile section tabs */}
+          <div className="flex gap-1 overflow-x-auto -mx-6 px-6 pb-2 lg:hidden scrollbar-none">
+            {SECTIONS.map((s) => (
+              <button key={s.id} onClick={() => setActiveSection(s.id)}
+                className={`shrink-0 rounded-lg px-3.5 py-2 text-xs font-medium whitespace-nowrap transition-colors ${
+                  activeSection === s.id ? "bg-brand-50 text-brand-700" : "text-surface-500 hover:bg-surface-50"
+                }`}>
+                {s.label}
+              </button>
+            ))}
+          </div>
+
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Link href="/student" className="rounded-lg p-1.5 text-surface-400 hover:bg-surface-100 transition-colors lg:hidden">

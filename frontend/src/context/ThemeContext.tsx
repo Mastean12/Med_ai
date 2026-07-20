@@ -11,11 +11,11 @@ type ThemeContextType = {
 };
 
 const ThemeContext = createContext<ThemeContextType>({
-  theme: "system", resolved: "light", setTheme: () => {},
+  theme: "light", resolved: "light", setTheme: () => {},
 });
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("system");
+  const [theme, setThemeState] = useState<Theme>("light");
   const [resolved, setResolved] = useState<"light" | "dark">("light");
 
   useEffect(() => {
