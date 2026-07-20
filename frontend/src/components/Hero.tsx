@@ -52,15 +52,13 @@ export default function Hero() {
 
           {/* Right: Premium Illustration */}
           <div className="relative" aria-hidden="true">
-            <div className="relative mx-auto aspect-[4/3] w-full max-w-lg lg:mx-0 lg:max-w-none">
-              <div className="relative h-full w-full overflow-hidden rounded-3xl shadow-2xl shadow-brand-500/10">
-                <img
-                  src="/hero-illustration.svg"
-                  alt="Medical student using AI-powered learning platform with holographic medical elements"
-                  className="h-full w-full object-contain"
-                  loading="eager"
-                />
-              </div>
+            <div className="w-full max-w-lg mx-auto lg:mx-0">
+              <img
+                src="/hero-illustration.svg"
+                alt="Medical student using AI-powered learning platform with holographic medical elements"
+                className="w-full h-auto"
+                loading="eager"
+              />
             </div>
           </div>
         </div>
