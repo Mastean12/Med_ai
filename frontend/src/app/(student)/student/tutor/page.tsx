@@ -49,7 +49,7 @@ export default function TutorPage() {
   const [streaming, setStreaming] = useState(false);
   const [documents, setDocuments] = useState<DocRow[]>([]);
   const [documentId, setDocumentId] = useState("");
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mode, setMode] = useState("beginner");
   const [modes, setModes] = useState<Mode[]>([]);
   const [modeMenuOpen, setModeMenuOpen] = useState(false);
@@ -277,8 +277,8 @@ export default function TutorPage() {
       <div className="flex-1 flex flex-col min-w-0 bg-surface-50">
         <div className="flex items-center gap-3 border-b border-surface-200 bg-white px-4 py-2.5 shrink-0">
           {!sidebarOpen && (
-            <button onClick={() => setSidebarOpen(true)} className="rounded-lg p-1.5 text-surface-400 hover:bg-surface-100 transition-colors" title="Open sidebar">
-              <PanelRight className="h-4 w-4" />
+            <button onClick={() => setSidebarOpen(true)} className="flex items-center gap-1.5 rounded-lg p-1.5 text-surface-400 hover:bg-surface-100 transition-colors" title="Open sidebar">
+              <PanelRight className="h-4 w-4" /><span className="text-xs font-medium text-surface-500 lg:hidden">Sessions</span>
             </button>
           )}
 

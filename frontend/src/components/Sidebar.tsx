@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/context/ProfileContext";
@@ -11,24 +11,43 @@ import {
   LayoutDashboard, Upload, MessageSquare, Brain,
   StickyNote, PenTool, BarChart3, CreditCard,
   Settings, LogOut, Menu, X, ChevronLeft,
-  User,
+  User, GraduationCap, HelpCircle, MessageCircle,
 } from "lucide-react";
 import BrandLogo from "@/components/ui/BrandLogo";
 
-const navItems = [
-  { href: "/student", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/student/upload", label: "Upload Notes", icon: Upload },
-  { href: "/student/chat", label: "AI Chat", icon: MessageSquare },
-  { href: "/student/tutor", label: "AI Tutor", icon: Brain },
-  { href: "/student/flashcards", label: "Flashcards", icon: StickyNote },
-  { href: "/student/exam", label: "Exam Mode", icon: PenTool },
-  { href: "/student/progress", label: "Progress", icon: BarChart3 },
+const navGroups = [
+  {
+    label: "Learning",
+    items: [
+      { href: "/student", label: "Dashboard", icon: LayoutDashboard },
+      { href: "/student/tutor", label: "AI Tutor", icon: Brain },
+      { href: "/student/chat", label: "AI Chat", icon: MessageSquare },
+      { href: "/student/upload", label: "Upload Notes", icon: Upload },
+      { href: "/student/flashcards", label: "Flashcards", icon: StickyNote },
+      { href: "/student/exam", label: "Exam Mode", icon: PenTool },
+      { href: "/student/progress", label: "Progress", icon: BarChart3 },
+    ],
+  },
+  {
+    label: "Account",
+    items: [
+      { href: "/account/billing", label: "Billing", icon: CreditCard },
+      { href: "/account/settings", label: "Settings", icon: Settings },
+    ],
+  },
 ];
 
-const bottomItems = [
-  { href: "/account/billing", label: "Billing", icon: CreditCard },
-  { href: "/account/settings", label: "Settings", icon: Settings },
-];
+const pageTitles: Record<string, string> = {
+  "/student": "Dashboard",
+  "/student/tutor": "AI Tutor",
+  "/student/chat": "AI Chat",
+  "/student/upload": "Upload Notes",
+  "/student/flashcards": "Flashcards",
+  "/student/exam": "Exam Mode",
+  "/student/progress": "Progress",
+  "/account/billing": "Billing",
+  "/account/settings": "Settings",
+};
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -38,6 +57,11 @@ export function Sidebar() {
   const { collapsed, setCollapsed } = useSidebar();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+
+  const pageTitle = useMemo(() => {
+    const match = Object.entries(pageTitles).find(([path]) => pathname.startsWith(path));
+    return match?.[1] || "Medaitutor";
+  }, [pathname]);
 
   const handleSignOut = async () => {
     setLoggingOut(true);
@@ -64,47 +88,42 @@ export function Sidebar() {
         </button>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
-        {navItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            onClick={() => setMobileOpen(false)}
-            className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all group ${
-              isActive(item.href)
-                ? "bg-brand-50 text-brand-700 shadow-sm"
-                : "text-surface-500 hover:bg-surface-100 hover:text-surface-700"
-            }`}
-            title={collapsed ? item.label : undefined}
-          >
-            <item.icon className={`h-5 w-5 shrink-0 ${isActive(item.href) ? "text-brand-600" : "text-surface-400 group-hover:text-surface-500"}`} />
-            {!collapsed && <span>{item.label}</span>}
-            {isActive(item.href) && !collapsed && (
-              <div className="ml-auto h-1.5 w-1.5 rounded-full bg-brand-500" />
+      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+        {navGroups.map((group) => (
+          <div key={group.label}>
+            {!collapsed && (
+              <p className="px-3 pb-1.5 text-[11px] font-semibold uppercase tracking-widest text-surface-400">
+                {group.label}
+              </p>
             )}
-          </Link>
+            <div className="space-y-0.5">
+              {group.items.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all group ${
+                    isActive(item.href)
+                      ? "bg-brand-50 text-brand-700 shadow-sm"
+                      : "text-surface-500 hover:bg-surface-100 hover:text-surface-700"
+                  }`}
+                  title={collapsed ? item.label : undefined}
+                >
+                  <item.icon className={`h-5 w-5 shrink-0 ${isActive(item.href) ? "text-brand-600" : "text-surface-400 group-hover:text-surface-500"}`} />
+                  {!collapsed && <span>{item.label}</span>}
+                  {isActive(item.href) && !collapsed && (
+                    <div className="ml-auto h-1.5 w-1.5 rounded-full bg-brand-500" />
+                  )}
+                </Link>
+              ))}
+            </div>
+          </div>
         ))}
-      </nav>
+      </div>
 
       <div className="border-t border-surface-200 px-3 py-3 space-y-1">
-        {bottomItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all group ${
-              pathname.startsWith(item.href)
-                ? "bg-surface-100 text-surface-700"
-                : "text-surface-500 hover:bg-surface-100 hover:text-surface-700"
-            }`}
-            title={collapsed ? item.label : undefined}
-          >
-            <item.icon className="h-5 w-5 shrink-0 text-surface-400 group-hover:text-surface-500" />
-            {!collapsed && <span>{item.label}</span>}
-          </Link>
-        ))}
-
         {!collapsed && (
-          <div className="mt-3 rounded-xl border border-surface-200 bg-surface-50 p-3">
+          <div className="rounded-xl border border-surface-200 bg-surface-50 p-3">
             <div className="flex items-center gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-brand-700">
                 <User className="h-4 w-4" />
@@ -130,12 +149,13 @@ export function Sidebar() {
 
   return (
     <>
-      <button
-        onClick={() => setMobileOpen(true)}
-        className="fixed left-4 top-3 z-50 rounded-lg border border-surface-200 bg-white p-2 text-surface-500 shadow-sm lg:hidden"
-      >
-        <Menu className="h-5 w-5" />
-      </button>
+      {/* Mobile header */}
+      <div className="sticky top-0 z-30 flex items-center gap-3 border-b border-surface-200 bg-white/95 backdrop-blur px-4 py-3 lg:hidden">
+        <button onClick={() => setMobileOpen(true)} className="rounded-lg p-1.5 text-surface-500 hover:bg-surface-100 transition-colors -ml-1.5">
+          <Menu className="h-5 w-5" />
+        </button>
+        <div className="flex-1 text-base font-semibold text-surface-800 truncate">{pageTitle}</div>
+      </div>
 
       <AnimatePresence>
         {mobileOpen && (
@@ -144,21 +164,17 @@ export function Sidebar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-surface-900/50 lg:hidden"
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-40 bg-surface-900/40 lg:hidden"
               onClick={() => setMobileOpen(false)}
             />
             <motion.aside
               initial={{ x: -280 }}
               animate={{ x: 0 }}
               exit={{ x: -280 }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              transition={{ type: "spring", damping: 28, stiffness: 250 }}
               className="fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-xl lg:hidden"
             >
-              <div className="absolute right-3 top-3">
-                <button onClick={() => setMobileOpen(false)} className="rounded-lg p-1.5 text-surface-400 hover:bg-surface-100">
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
               {sidebarContent}
             </motion.aside>
           </>
