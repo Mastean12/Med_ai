@@ -9,6 +9,10 @@ export const metadata = {
   title: "Medaitutor — Shaping Tomorrow's Healthcare Professionals",
   description:
     "Upload medical notes, generate smart flashcards, and get AI-powered Q&A with source citations.",
+  icons: {
+    icon: [{ url: "/logo.png", type: "image/png" }],
+    apple: "/logo.png",
+  },
 };
 
 const themeScript = `
