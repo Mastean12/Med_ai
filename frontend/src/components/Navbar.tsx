@@ -31,6 +31,7 @@ export default function Navbar() {
         </Link>
 
         <nav className="hidden items-center gap-4 md:flex">
+          <Link href="/home" className="text-sm font-medium text-surface-500 transition-colors hover:text-brand-600">Home</Link>
           <Link href="/pricing" className="text-sm font-medium text-surface-500 transition-colors hover:text-brand-600">Pricing</Link>
           <Link href="/public" className="text-sm font-medium text-surface-500 transition-colors hover:text-brand-600">Public Health</Link>
 
@@ -65,6 +66,7 @@ export default function Navbar() {
 
       {mobileOpen && (
         <nav className="border-t border-surface-200 bg-white px-5 py-4 md:hidden space-y-1">
+          <Link href="/home" className="block rounded-lg px-3 py-2.5 text-sm font-medium text-surface-600 hover:bg-surface-50" onClick={() => setMobileOpen(false)}>Home</Link>
           <Link href="/pricing" className="block rounded-lg px-3 py-2.5 text-sm font-medium text-surface-600 hover:bg-surface-50" onClick={() => setMobileOpen(false)}>Pricing</Link>
           <Link href="/public" className="block rounded-lg px-3 py-2.5 text-sm font-medium text-surface-600 hover:bg-surface-50" onClick={() => setMobileOpen(false)}>Public Health</Link>
           <hr className="border-surface-200" />
