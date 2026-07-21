@@ -94,12 +94,12 @@ export default function StudentDashboard() {
   const dateStr = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
 
   return (
-    <div className="space-y-6 p-6 lg:p-8">
+    <div className="space-y-4 p-4 lg:p-8">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
-        className="relative overflow-hidden rounded-2xl border border-surface-200 bg-white p-6 shadow-sm lg:p-8"
+        className="relative overflow-hidden rounded-2xl border border-surface-200 bg-white p-5 shadow-sm lg:p-8"
       >
         <div className="absolute inset-0 bg-gradient-to-r from-brand-50/50 via-transparent to-accent-50/30" />
         <div className="relative">
@@ -130,7 +130,7 @@ export default function StudentDashboard() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.05 }}
-        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
       >
         {loading
           ? [1, 2, 3, 4].map((i) => <div key={i} className="h-[104px] animate-shimmer rounded-2xl bg-surface-100" />)
@@ -155,7 +155,7 @@ export default function StudentDashboard() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.1 }}
-          className="lg:col-span-2 space-y-6"
+          className="lg:col-span-2 space-y-4"
         >
           <div className="grid gap-3 sm:grid-cols-2">
             {quickActions.map((action, i) => (
