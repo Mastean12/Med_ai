@@ -150,11 +150,12 @@ export function Sidebar() {
   return (
     <>
       {/* Mobile header */}
-      <div className="sticky top-0 z-30 flex items-center gap-3 border-b border-surface-200 bg-white/95 backdrop-blur px-4 py-3 lg:hidden">
-        <button onClick={() => setMobileOpen(true)} className="rounded-lg p-1.5 text-surface-500 hover:bg-surface-100 transition-colors -ml-1.5">
+      <div className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-surface-200 bg-white/95 backdrop-blur px-4 lg:hidden">
+        <button onClick={() => setMobileOpen(true)} className="rounded-lg p-2 text-surface-500 hover:bg-surface-100 transition-colors -ml-2">
           <Menu className="h-5 w-5" />
         </button>
-        <div className="flex-1 text-base font-semibold text-surface-800 truncate">{pageTitle}</div>
+        <BrandLogo size="sm" />
+        <span className="ml-auto text-xs font-medium text-surface-400 capitalize">{pageTitle}</span>
       </div>
 
       <AnimatePresence>
@@ -173,7 +174,7 @@ export function Sidebar() {
               animate={{ x: 0 }}
               exit={{ x: -280 }}
               transition={{ type: "spring", damping: 28, stiffness: 250 }}
-              className="fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-xl lg:hidden"
+              className="fixed inset-y-0 left-0 z-50 max-w-[320px] w-[85vw] bg-white shadow-xl lg:hidden"
             >
               {sidebarContent}
             </motion.aside>

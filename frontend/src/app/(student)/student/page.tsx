@@ -103,25 +103,26 @@ export default function StudentDashboard() {
       >
         <div className="absolute inset-0 bg-gradient-to-r from-brand-50/50 via-transparent to-accent-50/30" />
         <div className="relative">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm font-medium text-surface-500">{dateStr}</p>
-              <h1 className="mt-1 text-2xl font-bold tracking-tight text-surface-900 lg:text-3xl">
+              <p className="text-xs font-medium text-surface-500">{dateStr}</p>
+              <h1 className="mt-0.5 text-xl font-bold tracking-tight text-surface-900 lg:text-3xl">
                 Welcome back, {displayName}
               </h1>
-              <p className="mt-2 text-sm text-surface-500 max-w-lg">
+              <p className="mt-1 text-sm text-surface-500 max-w-lg">
                 {streak > 0
-                  ? `You've studied ${streak} day${streak > 1 ? "s" : ""} in a row. Keep your streak going!`
-                  : "Start your learning journey today. Upload your notes to begin."}
+                  ? `You've studied ${streak} day${streak > 1 ? "s" : ""} in a row.`
+                  : "Upload your notes to begin."}
               </p>
             </div>
-            <div className="flex items-center gap-2 rounded-xl border border-brand-200 bg-brand-50 px-4 py-3">
-              <span className="text-2xl font-bold text-brand-700">{streak}</span>
+            {streak > 0 && (
+            <div className="flex shrink-0 items-center gap-2 rounded-xl border border-brand-200 bg-brand-50 px-4 py-2.5">
+              <span className="text-xl font-bold text-brand-700">{streak}</span>
               <div className="text-xs">
                 <p className="font-medium text-brand-600">Day Streak</p>
-                <p className="text-brand-400">Keep going!</p>
               </div>
             </div>
+            )}
           </div>
         </div>
       </motion.div>
@@ -130,8 +131,7 @@ export default function StudentDashboard() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.05 }}
-        className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
-      >
+        className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {loading
           ? [1, 2, 3, 4].map((i) => <div key={i} className="h-[104px] animate-shimmer rounded-2xl bg-surface-100" />)
           : ([
@@ -157,7 +157,7 @@ export default function StudentDashboard() {
           transition={{ duration: 0.35, delay: 0.1 }}
           className="lg:col-span-2 space-y-4"
         >
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-2 gap-3">
             {quickActions.map((action, i) => (
               <motion.div
                 key={action.href}
