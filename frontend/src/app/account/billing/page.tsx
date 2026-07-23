@@ -18,8 +18,8 @@ type Subscription = {
   provider: string | null;
   current_period_end: string | null;
   cancel_at_period_end: boolean;
-  stripe_customer_id: string | null;
-  stripe_subscription_id: string | null;
+  provider_customer_id: string | null;
+  provider_subscription_id: string | null;
 };
 
 type UsageSummary = {
@@ -186,7 +186,7 @@ export default function BillingPage() {
             <CreditCard className="h-4 w-4 text-accent-500" />
             <h3 className="text-sm font-semibold text-surface-700">Payment</h3>
           </div>
-          {sub?.provider === "stripe" ? (
+          {sub?.provider === "lemonsqueezy" || sub?.provider === "mpesa" ? (
             <div>
               <p className="text-sm text-surface-700">Managed by Stripe</p>
               <button onClick={handlePortal} className="mt-2 text-sm font-medium text-brand-600 hover:text-brand-700">
@@ -199,8 +199,8 @@ export default function BillingPage() {
               <Link href="/pricing" className="mt-2 inline-block text-sm font-medium text-brand-600 hover:text-brand-700">Add one →</Link>
             </div>
           )}
-          {sub?.stripe_subscription_id && (
-            <p className="mt-3 text-xs text-surface-400 font-mono">Sub: {sub.stripe_subscription_id.slice(0, 14)}...</p>
+          {sub?.provider_subscription_id && (
+            <p className="mt-3 text-xs text-surface-400 font-mono">Sub: {sub.provider_subscription_id.slice(0, 14)}...</p>
           )}
         </motion.div>
       </div>

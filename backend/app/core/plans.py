@@ -2,10 +2,10 @@ from enum import Enum
 from typing import Dict, List
 
 from app.core.config import (
-    STRIPE_PRICE_PRO_MONTHLY,
-    STRIPE_PRICE_PRO_YEARLY,
-    STRIPE_PRICE_PREMIUM_MONTHLY,
-    STRIPE_PRICE_PREMIUM_YEARLY,
+    LEMONSQUEEZY_VARIANT_PRO_MONTHLY,
+    LEMONSQUEEZY_VARIANT_PRO_YEARLY,
+    LEMONSQUEEZY_VARIANT_PREMIUM_MONTHLY,
+    LEMONSQUEEZY_VARIANT_PREMIUM_YEARLY,
 )
 
 
@@ -43,10 +43,10 @@ class Feature(str, Enum):
 
 
 PRICE_ID_MAP: Dict[str, str] = {
-    "pro_monthly": STRIPE_PRICE_PRO_MONTHLY,
-    "pro_yearly": STRIPE_PRICE_PRO_YEARLY,
-    "premium_monthly": STRIPE_PRICE_PREMIUM_MONTHLY,
-    "premium_yearly": STRIPE_PRICE_PREMIUM_YEARLY,
+    "pro_monthly": LEMONSQUEEZY_VARIANT_PRO_MONTHLY,
+    "pro_yearly": LEMONSQUEEZY_VARIANT_PRO_YEARLY,
+    "premium_monthly": LEMONSQUEEZY_VARIANT_PREMIUM_MONTHLY,
+    "premium_yearly": LEMONSQUEEZY_VARIANT_PREMIUM_YEARLY,
 }
 
 

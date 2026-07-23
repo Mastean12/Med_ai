@@ -25,15 +25,19 @@ services:
         sync: false
       - key: STRIPE_WEBHOOK_SECRET
         sync: false
-      - key: STRIPE_PUBLISHABLE_KEY
+      - key: LEMONSQUEEZY_API_KEY
         sync: false
-      - key: STRIPE_PRICE_PRO_MONTHLY
+      - key: LEMONSQUEEZY_STORE_ID
         sync: false
-      - key: STRIPE_PRICE_PRO_YEARLY
+      - key: LEMONSQUEEZY_WEBHOOK_SECRET
         sync: false
-      - key: STRIPE_PRICE_PREMIUM_MONTHLY
+      - key: LEMONSQUEEZY_VARIANT_PRO_MONTHLY
         sync: false
-      - key: STRIPE_PRICE_PREMIUM_YEARLY
+      - key: LEMONSQUEEZY_VARIANT_PRO_YEARLY
+        sync: false
+      - key: LEMONSQUEEZY_VARIANT_PREMIUM_MONTHLY
+        sync: false
+      - key: LEMONSQUEEZY_VARIANT_PREMIUM_YEARLY
         sync: false
       - key: APP_BASE_URL
         value: https://med-ai-indol.vercel.app
