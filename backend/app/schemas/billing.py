@@ -1,14 +1,16 @@
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any
-from enum import Enum
 
 
 class CheckoutIn(BaseModel):
-    plan: str  # "pro_monthly", "pro_yearly", or "university"
+    plan: str
+    country: Optional[str] = None
+    phone_number: Optional[str] = None
 
 
 class CheckoutOut(BaseModel):
     checkout_url: Optional[str] = None
+    mpesa: Optional[Dict[str, Any]] = None
 
 
 class PortalOut(BaseModel):
@@ -22,8 +24,8 @@ class SubscriptionOut(BaseModel):
     current_period_end: Optional[str] = None
     cancel_at_period_end: bool = False
     trial_end: Optional[str] = None
-    stripe_customer_id: Optional[str] = None
-    stripe_subscription_id: Optional[str] = None
+    provider_customer_id: Optional[str] = None
+    provider_subscription_id: Optional[str] = None
     renewal_date: Optional[str] = None
 
 

@@ -1,8 +1,9 @@
 """
-Billing Router.
+Unified Billing Router — routes to M-Pesa (Kenya) or Lemon Squeezy (International).
 """
 import logging
-import stripe
+import hashlib
+import hmac
 from fastapi import APIRouter, Depends, Request, HTTPException
 
 from app.core.auth import get_current_user
@@ -13,8 +14,10 @@ from app.schemas.billing import (
     StkPushIn, StkPushOut, UsageSummaryOut,
 )
 from app.services.subscription_service import get_subscription
-from app.services.stripe_service import (
-    create_checkout_session, create_customer_portal, handle_webhook,
+from app.services.lemonsqueezy_service import (
+    create_checkout as ls_create_checkout,
+    create_customer_portal as ls_create_portal,
+    verify_webhook as ls_verify_webhook,
 )
 from app.services.mpesa_service import stk_push, process_callback
 from app.services.usage_service import get_usage_summary
@@ -22,15 +25,29 @@ from app.services.usage_service import get_usage_summary
 logger = logging.getLogger("medaitutor.billing_router")
 
 router = APIRouter(tags=["Billing"])
-stripe_router = APIRouter(tags=["Stripe"])
 
 
 @router.post("/create-checkout-session", response_model=CheckoutOut)
-async def create_stripe_checkout(
+async def unified_checkout(
     payload: CheckoutIn,
     user=Depends(get_current_user),
 ):
-    return await create_checkout_session(
+    region = (payload.country or "").upper()
+
+    # Kenyan phone numbers = M-Pesa
+    if region == "KE" or payload.phone_number:
+        if not payload.phone_number:
+            raise HTTPException(status_code=400, detail="Phone number required for M-Pesa")
+        result = await stk_push(
+            user_id=user["id"],
+            phone_number=payload.phone_number,
+            amount=_get_kes_amount(payload.plan),
+            account_reference=f"MT-{payload.plan}",
+        )
+        return {"checkout_url": None, "mpesa": result}
+
+    # International = Lemon Squeezy
+    return await ls_create_checkout(
         user_id=user["id"],
         user_email=user.get("email", ""),
         plan_key=payload.plan,
@@ -39,7 +56,15 @@ async def create_stripe_checkout(
 
 @router.post("/create-customer-portal", response_model=PortalOut)
 async def customer_portal(user=Depends(get_current_user)):
-    return await create_customer_portal(user_id=user["id"])
+    sub = await get_subscription(user["id"])
+    provider = sub.get("provider", "")
+
+    if provider == "lemonsqueezy":
+        return await ls_create_portal(user["id"])
+    if provider == "mpesa":
+        return {"url": f"{settings.APP_BASE_URL}/account/billing?support=mpesa"}
+
+    return {"url": f"{settings.APP_BASE_URL}/account/billing"}
 
 
 @router.get("/subscription", response_model=SubscriptionOut)
@@ -51,8 +76,7 @@ async def get_my_subscription(user=Depends(get_current_user)):
         provider=sub.get("provider"),
         current_period_end=sub.get("current_period_end"),
         cancel_at_period_end=sub.get("cancel_at_period_end", False),
-        stripe_customer_id=sub.get("provider_customer_id"),
-        stripe_subscription_id=sub.get("provider_subscription_id"),
+        provider_customer_id=sub.get("provider_customer_id"),
         renewal_date=sub.get("current_period_end"),
     )
 
@@ -63,29 +87,20 @@ async def my_usage(user=Depends(get_current_user)):
     return UsageSummaryOut(**summary)
 
 
-@router.post("/cancel")
-async def cancel_my_subscription(user=Depends(get_current_user)):
-    try:
-        sb = supabase_admin()
-        sub = await get_subscription(user["id"])
-        stripe_sub_id = sub.get("provider_subscription_id")
-        if stripe_sub_id:
-            stripe.api_key = settings.STRIPE_SECRET_KEY
-            stripe.Subscription.modify(stripe_sub_id, cancel_at_period_end=True)
-        sb.table("subscriptions").update({
-            "cancel_at_period_end": True,
-            "updated_at": "now()",
-        }).eq("user_id", user["id"]).execute()
-        return {"canceled": True}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e)[:200])
+def _get_kes_amount(plan_key: str) -> int:
+    """Return KES amount for a plan key."""
+    mapping = {
+        "pro_monthly": 2700, "pro_yearly": 27000,
+        "premium_monthly": 7000, "premium_yearly": 70000,
+    }
+    return mapping.get(plan_key, 2700)
 
 
-@stripe_router.post("/webhook")
-async def stripe_webhook(request: Request):
+@router.post("/lemonsqueezy/webhook")
+async def ls_webhook(request: Request):
     payload = await request.body()
-    signature = request.headers.get("stripe-signature", "")
-    return await handle_webhook(payload, signature)
+    signature = request.headers.get("x-signature", "")
+    return await ls_verify_webhook(payload, signature)
 
 
 @router.post("/mpesa/stk-push", response_model=StkPushOut)

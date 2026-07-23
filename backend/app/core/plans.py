@@ -25,6 +25,7 @@ class PlanStatus(str, Enum):
 
 class PaymentProvider(str, Enum):
     STRIPE = "stripe"
+    LEMONSQUEEZY = "lemonsqueezy"
     MPESA = "mpesa"
 
 
