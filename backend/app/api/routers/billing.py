@@ -16,7 +16,7 @@ from app.services.usage_service import get_usage_summary
 
 logger = logging.getLogger("medaitutor.billing_router")
 
-router = APIRouter(prefix="/billing", tags=["Billing"])
+router = APIRouter(tags=["Billing"])
 
 
 @router.get("/subscription", response_model=SubscriptionOut)
