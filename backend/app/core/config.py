@@ -37,7 +37,7 @@ class Settings(BaseSettings):
 
     APP_BASE_URL: str = "http://localhost:3000"
     BACKEND_BASE_URL: str = "http://localhost:8000"
-    CORS_ORIGINS: str = "http://localhost:3000,http://127.0.0.1:3000"
+    CORS_ORIGINS: str = "https://medaitutor.com,https://www.medaitutor.com,http://localhost:3000,http://127.0.0.1:3000"
 
     model_config = SettingsConfigDict(env_file=".env")
 

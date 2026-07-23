@@ -87,7 +87,7 @@ export default function PricingPage() {
     try {
       const token = await getToken();
       if (!token) { window.location.href = "/login?redirect=pricing"; return; }
-      const res = await fetch(`${API_BASE_URL}/billing/create-checkout-session`, {
+      const res = await fetch(`${API_BASE_URL}/payments/lemonsqueezy/checkout`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify({ plan: pk }),

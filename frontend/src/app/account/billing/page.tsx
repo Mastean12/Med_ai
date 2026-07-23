@@ -85,7 +85,7 @@ export default function BillingPage() {
     setActionLoading("portal"); setError("");
     try {
       const token = await getToken();
-      const res = await fetch(`${API_BASE_URL}/billing/create-customer-portal`, {
+      const res = await fetch(`${API_BASE_URL}/payments/lemonsqueezy/portal`, {
         method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
       });
       const data = await res.json();

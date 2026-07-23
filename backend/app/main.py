@@ -7,7 +7,7 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
 from app.api.routers import flashcards
 
-from app.api.routers import documents, student, public, billing, test, auth, tutor, notes, exam, adaptive, research, settings
+from app.api.routers import documents, student, public, billing, payments, test, auth, tutor, notes, exam, adaptive, research, settings
 from app.core.config import ENV, CORS_ORIGINS
 
 logging.basicConfig(
@@ -75,6 +75,7 @@ app.include_router(documents.router, prefix="/documents", tags=["Documents"])
 app.include_router(student.router, prefix="/student", tags=["Student"])
 app.include_router(public.router, prefix="/public", tags=["Public"])
 app.include_router(billing.router, prefix="/billing", tags=["Billing"])
+app.include_router(payments.router, tags=["Payments"])
 app.include_router(test.router, prefix="/test", tags=["Test"])
 app.include_router(flashcards.router)
 app.include_router(auth.router)
