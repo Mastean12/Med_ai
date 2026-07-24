@@ -131,7 +131,7 @@ export default function StudentDashboard() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.05 }}
-        className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-3">
         {loading
           ? [1, 2, 3, 4].map((i) => <div key={i} className="h-[104px] animate-shimmer rounded-2xl bg-surface-100" />)
           : ([
@@ -140,12 +140,12 @@ export default function StudentDashboard() {
             { label: "Flashcards", value: data?.flashcards_created ?? 0, icon: StickyNote, trend: null, color: "text-purple-600 bg-purple-50" },
             { label: "Study Minutes", value: analytics?.totals?.total_study_minutes ?? 0, icon: Clock, trend: null, color: "text-accent-600 bg-accent-50" },
           ] as const).map((stat) => (
-            <div key={stat.label} className="rounded-2xl border border-surface-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
-              <div className={`inline-flex h-10 w-10 items-center justify-center rounded-xl ${stat.color.split(" ")[1]}`}>
-                <stat.icon className={`h-5 w-5 ${stat.color.split(" ")[0]}`} />
+            <div key={stat.label} className="rounded-2xl border border-surface-200 bg-white p-3 sm:p-5 shadow-sm transition-shadow hover:shadow-md min-w-0">
+              <div className={`inline-flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl ${stat.color.split(" ")[1]}`}>
+                <stat.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${stat.color.split(" ")[0]}`} />
               </div>
-              <p className={`mt-3 text-2xl font-bold tracking-tight ${stat.color.split(" ")[0]}`}>{stat.value}</p>
-              <p className="mt-0.5 text-sm text-surface-500">{stat.label}</p>
+              <p className={`mt-2 sm:mt-3 text-xl sm:text-2xl font-bold tracking-tight ${stat.color.split(" ")[0]}`}>{stat.value}</p>
+              <p className="mt-0.5 text-xs sm:text-sm text-surface-500">{stat.label}</p>
             </div>
           ))}
       </motion.div>
@@ -157,7 +157,7 @@ export default function StudentDashboard() {
           transition={{ duration: 0.35, delay: 0.1 }}
           className="lg:col-span-2 space-y-4"
         >
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-3">
             {loading ? (
               <>
                 <div className="h-[104px] animate-shimmer rounded-2xl bg-surface-100" />
@@ -175,12 +175,12 @@ export default function StudentDashboard() {
               >
                 <Link
                   href={action.href}
-                  className="group block rounded-2xl border border-surface-200 bg-white p-5 shadow-sm transition-all hover:shadow-md hover:border-surface-300"
+                  className="group block rounded-2xl border border-surface-200 bg-white p-3 sm:p-5 shadow-sm transition-all hover:shadow-md hover:border-surface-300"
                 >
-                  <div className={`inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${action.gradient} shadow-sm`}>
-                    <action.icon className="h-5 w-5 text-white" />
+                  <div className={`inline-flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br ${action.gradient} shadow-sm`}>
+                    <action.icon className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                   </div>
-                  <p className="mt-3 text-sm font-semibold text-surface-800">{action.label}</p>
+                  <p className="mt-2 sm:mt-3 text-sm font-semibold text-surface-800">{action.label}</p>
                   <p className="mt-0.5 text-xs text-surface-500">{action.desc}</p>
                 </Link>
               </motion.div>
