@@ -57,7 +57,8 @@ const features = [
 export default function Features() {
   return (
     <section className="relative overflow-hidden bg-surface-50 py-24 md:py-32">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,#eef2ff,transparent_50%)]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-brand-50/60 via-surface-50 to-purple-50/60" />
+      <div className="absolute top-20 left-1/3 w-[400px] h-[400px] rounded-full bg-brand-400/8 blur-[80px]" />
 
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-2xl text-center">

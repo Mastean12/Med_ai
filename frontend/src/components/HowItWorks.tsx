@@ -36,8 +36,8 @@ export default function HowItWorks() {
   return (
     <section className="relative overflow-hidden bg-white py-24 md:py-32">
       {/* Background decoration */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,#eef2ff,transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,#f5f3ff,transparent_50%)]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-50/80 via-white to-brand-50/80" />
+      <div className="absolute bottom-0 right-1/3 w-[450px] h-[450px] rounded-full bg-purple-400/8 blur-[90px]" />
 
       <div className="relative mx-auto max-w-7xl px-6">
         {/* Header */}

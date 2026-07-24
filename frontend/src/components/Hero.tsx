@@ -6,8 +6,9 @@ import BrandLogo from "@/components/ui/BrandLogo";
 export default function Hero() {
   return (
     <section className="relative overflow-hidden bg-white">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,#eef2ff,transparent_60%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,#f5f3ff,transparent_50%)]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-brand-50/80 via-white to-purple-50/80" />
+      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full bg-brand-400/10 blur-[100px]" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full bg-purple-400/10 blur-[100px]" />
 
       <div className="relative mx-auto max-w-7xl px-6 pb-20 pt-16 md:pb-28 md:pt-24">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">

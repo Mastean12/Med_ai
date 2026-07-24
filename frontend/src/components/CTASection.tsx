@@ -4,8 +4,8 @@ import { GraduationCap, HeartPulse } from "lucide-react";
 export default function CTASection() {
   return (
     <section className="relative overflow-hidden bg-white py-24 md:py-32">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,#eef2ff,transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,#f5f3ff,transparent_50%)]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-brand-50/80 via-white to-purple-50/80" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-gradient-to-br from-brand-400/5 to-purple-400/5 blur-[120px]" />
 
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-4xl">
