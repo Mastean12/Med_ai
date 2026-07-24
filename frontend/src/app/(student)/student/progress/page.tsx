@@ -48,7 +48,7 @@ export default function StudentProgressPage() {
     return (
       <div className="space-y-6 p-6 lg:p-8">
         <div className="h-8 w-48 animate-shimmer rounded-xl" />
-        <div className="grid gap-4 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[1, 2, 3, 4].map((i) => <div key={i} className="h-28 animate-shimmer rounded-2xl" />)}
         </div>
         <div className="h-64 animate-shimmer rounded-2xl" />
@@ -95,7 +95,7 @@ export default function StudentProgressPage() {
       </motion.div>
 
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.05 }}
-        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {([
           { label: "Current Streak", value: `${analytics?.streak?.current_streak || 0} days`, sub: `Best: ${analytics?.streak?.longest_streak || 0}`, icon: TrendingUp, color: "text-orange-600 bg-orange-50" },
           { label: "Study Minutes", value: String(analytics?.totals?.total_study_minutes || 0), sub: "Total time invested", icon: Clock, color: "text-accent-600 bg-accent-50" },

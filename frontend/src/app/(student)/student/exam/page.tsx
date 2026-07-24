@@ -103,7 +103,7 @@ export default function ExamPage() {
         <p className="mt-1 text-sm text-surface-500">AI-powered medical exam preparation.</p>
       </motion.div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {[{ label: "Exams Done", value: dashboard?.exams_completed ?? 0, icon: PenTool, color: "text-brand-600 bg-brand-50" },
           { label: "Questions", value: dashboard?.total_questions_answered ?? 0, icon: Target, color: "text-accent-600 bg-accent-50" },
           { label: "Avg Score", value: `${dashboard?.average_score ?? 0}%`, icon: TrendingUp, color: "text-purple-600 bg-purple-50" },
