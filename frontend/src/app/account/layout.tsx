@@ -9,7 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 function MainContent({ children }: { children: React.ReactNode }) {
   const { collapsed } = useSidebar();
   return (
-    <div className={`min-h-screen transition-all duration-200 ${collapsed ? "lg:ml-[68px]" : "lg:ml-64"}`}>
+    <div className={`min-h-screen w-full max-w-full overflow-x-hidden transition-all duration-200 ${collapsed ? "lg:ml-[68px]" : "lg:ml-64"}`}>
       <main>{children}</main>
     </div>
   );
