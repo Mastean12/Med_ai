@@ -86,8 +86,8 @@ async def ls_webhook(request: Request):
 @router.post("/mpesa/stk-push", response_model=MpesaStkOut)
 async def mpesa_stk(payload: MpesaStkIn, user=Depends(get_current_user)):
     amount_map = {
-        "pro_monthly": 2700, "pro_yearly": 27000,
-        "premium_monthly": 7000, "premium_yearly": 70000,
+        "student_pro_monthly": 2700, "student_pro_annual": 27000,
+        "premium_monthly": 7000, "premium_annual": 70000,
     }
     amount = amount_map.get(payload.plan, 2700)
     try:

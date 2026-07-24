@@ -42,10 +42,10 @@ class Feature(str, Enum):
 
 
 PRICE_ID_MAP: Dict[str, str] = {
-    "pro_monthly": LEMONSQUEEZY_VARIANT_PRO_MONTHLY,
-    "pro_yearly": LEMONSQUEEZY_VARIANT_PRO_YEARLY,
+    "student_pro_monthly": LEMONSQUEEZY_VARIANT_PRO_MONTHLY,
+    "student_pro_annual": LEMONSQUEEZY_VARIANT_PRO_YEARLY,
     "premium_monthly": LEMONSQUEEZY_VARIANT_PREMIUM_MONTHLY,
-    "premium_yearly": LEMONSQUEEZY_VARIANT_PREMIUM_YEARLY,
+    "premium_annual": LEMONSQUEEZY_VARIANT_PREMIUM_YEARLY,
 }
 
 

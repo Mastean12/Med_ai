@@ -68,9 +68,9 @@ const plans = [
 const faqs = [
   { q: "Can I switch plans anytime?", a: "Yes. Upgrade or downgrade at any time. Changes take effect immediately for upgrades." },
   { q: "Is there a free trial?", a: "Pro includes a 7-day free trial. No credit card required for Free." },
-  { q: "What payments are accepted?", a: "Credit and debit cards globally via Stripe." },
+  { q: "What payments are accepted?", a: "Credit and debit cards via Lemon Squeezy, or M-Pesa for Kenyan customers." },
   { q: "Can I cancel anytime?", a: "Absolutely. Cancel from your account. Access continues until the billing period ends." },
-  { q: "Is my payment info secure?", a: "Payments processed by Stripe — PCI-DSS Level 1 certified. We never store card details." },
+  { q: "Is my payment info secure?", a: "Payments are processed by Lemon Squeezy (PCI Level 1) and Safaricom M-Pesa. We never store card details." },
 ];
 
 export default function PricingPage() {
@@ -79,7 +79,11 @@ export default function PricingPage() {
   const [error, setError] = useState("");
   const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
 
-  const planKey = (base: string) => billing === "yearly" ? `${base}_yearly` : `${base}_monthly`;
+  const planKey = (base: string) => {
+    if (base === "student_pro") return billing === "yearly" ? "student_pro_annual" : "student_pro_monthly";
+    if (base === "premium") return billing === "yearly" ? "premium_annual" : "premium_monthly";
+    return base;
+  };
 
   const handleCheckout = async (base: string) => {
     const pk = planKey(base);

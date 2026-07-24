@@ -36,8 +36,10 @@ def _api_headers() -> dict:
 
 async def _activate_subscription_internal(user_id: str, plan_key: str):
     """Activate subscription directly (for dev/simulated checkout)."""
-    plan = PlanTier.PRO
-    if plan_key.startswith("premium"):
+    plan = PlanTier.FREE
+    if plan_key.startswith("student_pro") or plan_key.startswith("pro"):
+        plan = PlanTier.PRO
+    elif plan_key.startswith("premium"):
         plan = PlanTier.PREMIUM
     await upsert_subscription(
         user_id=user_id,
@@ -49,17 +51,21 @@ async def _activate_subscription_internal(user_id: str, plan_key: str):
 
 
 async def create_checkout(user_id: str, user_email: str, plan_key: str) -> Dict[str, Any]:
-    variant_id = PRICE_ID_MAP.get(plan_key)
-    if not variant_id:
-        raise HTTPException(status_code=400, detail=f"Unknown plan: {plan_key}")
+    logger.info("Checkout requested: plan=%s user=%s", plan_key, user_id[:12])
 
-    # Simulate checkout when not fully configured
-    if not settings.LEMONSQUEEZY_API_KEY or settings.ENV != "production":
-        logger.info("SIMULATED: LS checkout for %s (variant=%s)", plan_key, variant_id)
+    # Simulated checkout when not fully configured
+    api_key = settings.LEMONSQUEEZY_API_KEY
+    if not api_key or settings.ENV != "production":
+        logger.info("SIMULATED: LS checkout for %s", plan_key)
         await _activate_subscription_internal(user_id, plan_key)
         return {
             "checkout_url": f"{settings.APP_BASE_URL}/account/billing?dev_checkout=success&plan={plan_key}",
         }
+
+    variant_id = PRICE_ID_MAP.get(plan_key)
+    if not variant_id:
+        logger.error("Unknown plan key: %s (available: %s)", plan_key, list(PRICE_ID_MAP.keys()))
+        raise HTTPException(status_code=400, detail=f"Unknown plan: {plan_key}")
 
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
