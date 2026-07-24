@@ -27,7 +27,7 @@ const plans = [
     ],
   },
   {
-    key: "pro", label: "Student Pro", price: 19, badge: "Most Popular",
+    key: "student_pro", label: "Student Pro", price: 19, badge: "Most Popular",
     desc: "Unlock unlimited exam prep, AI tutor, and advanced analytics.",
     cta: "Start Pro",
     popular: true,
