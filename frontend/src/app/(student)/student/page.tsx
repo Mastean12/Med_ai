@@ -158,7 +158,15 @@ export default function StudentDashboard() {
           className="lg:col-span-2 space-y-4"
         >
           <div className="grid grid-cols-2 gap-3">
-            {quickActions.map((action, i) => (
+            {loading ? (
+              <>
+                <div className="h-[104px] animate-shimmer rounded-2xl bg-surface-100" />
+                <div className="h-[104px] animate-shimmer rounded-2xl bg-surface-100" />
+                <div className="h-[104px] animate-shimmer rounded-2xl bg-surface-100" />
+                <div className="h-[104px] animate-shimmer rounded-2xl bg-surface-100" />
+              </>
+            ) : (
+              quickActions.map((action, i) => (
               <motion.div
                 key={action.href}
                 initial={{ opacity: 0, y: 10 }}
@@ -176,7 +184,8 @@ export default function StudentDashboard() {
                   <p className="mt-0.5 text-xs text-surface-500">{action.desc}</p>
                 </Link>
               </motion.div>
-            ))}
+            ))
+            )}
           </div>
 
           <div className="rounded-2xl border border-surface-200 bg-white shadow-sm">
