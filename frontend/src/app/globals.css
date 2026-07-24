@@ -118,6 +118,9 @@ body {
   color: #e2e8f0;
 }
 
+.dark *::-webkit-input-placeholder { color: #475569 !important; }
+.dark *:-moz-placeholder { color: #475569 !important; }
+
 .dark .bg-white { background-color: #1a2332; }
 .dark .bg-white\/95 { background-color: rgb(26 35 50 / 0.95); }
 .dark .bg-white\/90 { background-color: rgb(26 35 50 / 0.9); }
@@ -132,17 +135,29 @@ body {
 .dark .bg-surface-800 { background-color: #e2e8f0; }
 .dark .bg-surface-900 { background-color: #f1f5f9; }
 
+.dark .bg-gray-50 { background-color: #0f172a; }
+.dark .bg-gray-100 { background-color: #1e293b; }
+
 .dark .text-surface-400 { color: #5c6f87; }
 .dark .text-surface-500 { color: #7e92ab; }
 .dark .text-surface-600 { color: #9fb0c7; }
 .dark .text-surface-700 { color: #cbd5e1; }
 .dark .text-surface-800 { color: #e2e8f0; }
 .dark .text-surface-900 { color: #f1f5f9; }
+.dark .text-gray-400 { color: #64748b; }
+.dark .text-gray-500 { color: #7e92ab; }
+.dark .text-gray-600 { color: #9fb0c7; }
+.dark .text-gray-700 { color: #cbd5e1; }
+.dark .text-gray-800 { color: #e2e8f0; }
+.dark .text-gray-900 { color: #f1f5f9; }
 
 .dark .border-surface-100 { border-color: #111827; }
 .dark .border-surface-200 { border-color: #1e293b; }
 .dark .border-surface-300 { border-color: #2d3a4e; }
 .dark .border-surface-700 { border-color: #cbd5e1; }
+.dark .border-gray-200 { border-color: #1e293b; }
+.dark .divide-surface-200 > * + * { border-color: #1e293b; }
+.dark .divide-surface-100 > * + * { border-color: #111827; }
 
 .dark .bg-brand-50 { background-color: #1a1a4e; }
 .dark .bg-brand-100 { background-color: #2d2d7d; }
@@ -177,3 +192,15 @@ body {
 .dark .hover\:border-surface-400:hover { border-color: #5c6f87; }
 
 .dark .group-hover\:bg-brand-50:is(:where(.group):hover *) { background-color: #1a1a4e; }
+
+.dark .shadow-sm, .dark .shadow, .dark .shadow-md, .dark .shadow-lg, .dark .shadow-xl {
+  --tw-shadow-color: rgba(0, 0, 0, 0.4);
+}
+.dark .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0,0,0,0.4); }
+.dark .shadow { box-shadow: 0 1px 3px 0 rgba(0,0,0,0.4), 0 1px 2px -1px rgba(0,0,0,0.3); }
+.dark .shadow-md { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -2px rgba(0,0,0,0.3); }
+.dark .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.4), 0 4px 6px -4px rgba(0,0,0,0.3); }
+.dark .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0,0,0,0.4), 0 8px 10px -6px rgba(0,0,0,0.3); }
+
+.dark .ring-1 { --tw-ring-color: rgba(255,255,255,0.05); }
+.dark .ring-surface-200 { --tw-ring-color: #1e293b; }
