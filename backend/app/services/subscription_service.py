@@ -1,13 +1,9 @@
 """
 Subscription Management Service.
-
-Handles plan CRUD, provider sync, and status lifecycle.
 """
 import logging
 from datetime import datetime, timezone
 from typing import Dict, Any, Optional
-
-from fastapi import HTTPException
 
 from app.core.supabase import supabase_admin
 from app.core.plans import PlanTier, PlanStatus, PaymentProvider
@@ -16,20 +12,13 @@ logger = logging.getLogger("medaitutor.subscriptions")
 
 
 async def get_subscription(user_id: str) -> Dict[str, Any]:
-    """Get current subscription for a user. Returns free tier default if none."""
     sb = supabase_admin()
     try:
-        res = (
-            sb.table("subscriptions")
-            .select("*")
-            .eq("user_id", user_id)
-            .maybe_single()
-            .execute()
-        )
+        res = sb.table("subscriptions").select("*").eq("user_id", user_id).maybe_single().execute()
         if res.data:
             return res.data
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning("get_subscription failed for %s: %s", user_id, str(e))
 
     return {
         "plan": PlanTier.FREE.value,
@@ -40,7 +29,6 @@ async def get_subscription(user_id: str) -> Dict[str, Any]:
 
 
 async def get_active_plan(user_id: str) -> PlanTier:
-    """Get the user's active plan tier. Defaults to FREE."""
     sub = await get_subscription(user_id)
     try:
         return PlanTier(sub.get("plan", PlanTier.FREE.value))
@@ -58,7 +46,6 @@ async def upsert_subscription(
     current_period_end: Optional[datetime] = None,
     metadata: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
-    """Create or update a subscription record."""
     sb = supabase_admin()
     now = datetime.now(timezone.utc).isoformat()
 
@@ -80,45 +67,49 @@ async def upsert_subscription(
         payload["metadata"] = metadata
 
     try:
-        existing = (
-            sb.table("subscriptions")
-            .select("id")
-            .eq("user_id", user_id)
-            .maybe_single()
-            .execute()
-        )
-
-        if existing.data:
-            res = (
-                sb.table("subscriptions")
-                .update(payload)
-                .eq("user_id", user_id)
-                .execute()
-            )
-        else:
-            payload["user_id"] = user_id
-            payload["created_at"] = now
-            res = sb.table("subscriptions").insert(payload).execute()
-
-        return res.data[0] if res.data else {}
+        # First try updating existing record
+        res = sb.table("subscriptions").update(payload).eq("user_id", user_id).execute()
+        if res.data and len(res.data) > 0:
+            return res.data[0]
     except Exception as e:
-        logger.error("Failed to upsert subscription: %s", str(e))
-        raise HTTPException(status_code=500, detail="Failed to update subscription")
+        logger.warning("Subscription update failed (will try insert): %s", str(e))
+
+    # No existing record or update failed — insert new one
+    try:
+        payload["user_id"] = user_id
+        payload["created_at"] = now
+        if "updated_at" not in payload:
+            payload["updated_at"] = now
+        res = sb.table("subscriptions").insert(payload).execute()
+        if res.data and len(res.data) > 0:
+            return res.data[0]
+        # Insert returned no data (204). Try select to confirm.
+        sel = sb.table("subscriptions").select("*").eq("user_id", user_id).maybe_single().execute()
+        if sel.data:
+            return sel.data
+    except Exception as e:
+        logger.error("Subscription insert also failed: %s", str(e))
+
+    # Last resort — select to see if it was saved despite errors
+    try:
+        sel = sb.table("subscriptions").select("*").eq("user_id", user_id).maybe_single().execute()
+        if sel.data:
+            return sel.data
+    except Exception:
+        pass
+
+    logger.error("Failed to upsert subscription for user %s after all attempts", user_id)
+    return {}
 
 
 async def cancel_subscription(user_id: str) -> Dict[str, Any]:
-    """Mark subscription for cancellation at period end."""
     sb = supabase_admin()
     try:
-        res = (
-            sb.table("subscriptions")
-            .update({
-                "cancel_at_period_end": True,
-                "updated_at": datetime.now(timezone.utc).isoformat(),
-            })
-            .eq("user_id", user_id)
-            .execute()
-        )
-        return res.data[0] if res.data else {}
+        sb.table("subscriptions").update({
+            "cancel_at_period_end": True,
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+        }).eq("user_id", user_id).execute()
+        return {"canceled": True}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to cancel: {e}")
+        logger.error("Cancel subscription failed: %s", str(e))
+        return {"canceled": False, "error": str(e)[:200]}

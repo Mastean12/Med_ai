@@ -231,15 +231,18 @@ async def _handle_subscription_event(sb, event: Dict, custom_data: Dict):
     customer_id = str(attributes.get("customer_id", ""))
     sub_id = str(event.get("data", {}).get("id", ""))
 
-    await upsert_subscription(
-        user_id=user_id,
-        plan=plan,
-        status=plan_status,
-        provider=PaymentProvider.LEMONSQUEEZY,
-        provider_customer_id=customer_id,
-        provider_subscription_id=sub_id,
-        current_period_end=period_end,
-    )
+    try:
+        await upsert_subscription(
+            user_id=user_id,
+            plan=plan,
+            status=plan_status,
+            provider=PaymentProvider.LEMONSQUEEZY,
+            provider_customer_id=customer_id,
+            provider_subscription_id=sub_id,
+            current_period_end=period_end,
+        )
+    except Exception as e:
+        logger.error("Subscription sync failed for webhook %s: %s", event_name, str(e))
 
 
 async def _handle_subscription_cancelled(sb, event: Dict, custom_data: Dict):
