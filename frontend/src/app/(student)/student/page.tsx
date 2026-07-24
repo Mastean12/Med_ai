@@ -167,16 +167,13 @@ export default function StudentDashboard() {
               >
                 <Link
                   href={action.href}
-                  className="group flex items-center gap-4 rounded-xl border border-surface-200 bg-white p-4 shadow-sm transition-all hover:shadow-md hover:border-surface-300"
+                  className="group block rounded-2xl border border-surface-200 bg-white p-5 shadow-sm transition-all hover:shadow-md hover:border-surface-300"
                 >
-                  <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${action.gradient} shadow-sm`}>
+                  <div className={`inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${action.gradient} shadow-sm`}>
                     <action.icon className="h-5 w-5 text-white" />
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-surface-800">{action.label}</p>
-                    <p className="text-xs text-surface-500">{action.desc}</p>
-                  </div>
-                  <ChevronRight className="h-4 w-4 shrink-0 text-surface-300 transition-transform group-hover:translate-x-0.5 group-hover:text-surface-500" />
+                  <p className="mt-3 text-sm font-semibold text-surface-800">{action.label}</p>
+                  <p className="mt-0.5 text-xs text-surface-500">{action.desc}</p>
                 </Link>
               </motion.div>
             ))}
@@ -194,10 +191,10 @@ export default function StudentDashboard() {
               <div className="divide-y divide-surface-100">
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="flex items-center gap-4 px-6 py-4">
-                    <div className="h-10 w-10 animate-shimmer rounded-xl" />
+                    <div className="h-10 w-10 animate-shimmer rounded-xl shrink-0" />
                     <div className="flex-1 space-y-2">
-                      <div className="h-4 w-48 animate-shimmer rounded" />
-                      <div className="h-3 w-24 animate-shimmer rounded" />
+                      <div className="h-4 w-full max-w-[320px] animate-shimmer rounded" />
+                      <div className="h-3 w-28 animate-shimmer rounded" />
                     </div>
                   </div>
                 ))}
