@@ -26,7 +26,7 @@ LEMONSQUEEZY_API = "https://api.lemonsqueezy.com/v1"
 def _api_headers() -> dict:
     api_key = settings.LEMONSQUEEZY_API_KEY
     if not api_key:
-        raise HTTPException(status_code=503, detail="Lemon Squeezy is not configured. Contact support.")
+        raise HTTPException(status_code=503, detail="Lemon Squeezy is not configured. Set LEMONSQUEEZY_API_KEY in environment variables.")
     return {
         "Authorization": f"Bearer {api_key}",
         "Accept": "application/json",
@@ -34,33 +34,8 @@ def _api_headers() -> dict:
     }
 
 
-async def _activate_subscription_internal(user_id: str, plan_key: str):
-    """Activate subscription directly (for dev/simulated checkout)."""
-    plan = PlanTier.FREE
-    if plan_key.startswith("student_pro") or plan_key.startswith("pro"):
-        plan = PlanTier.PRO
-    elif plan_key.startswith("premium"):
-        plan = PlanTier.PREMIUM
-    await upsert_subscription(
-        user_id=user_id,
-        plan=plan,
-        status=PlanStatus.ACTIVE,
-        provider=PaymentProvider.LEMONSQUEEZY,
-        current_period_end=datetime.now(timezone.utc).replace(month=datetime.now(timezone.utc).month + 1),
-    )
-
-
 async def create_checkout(user_id: str, user_email: str, plan_key: str) -> Dict[str, Any]:
     logger.info("Checkout requested: plan=%s user=%s", plan_key, user_id[:12])
-
-    # Simulated checkout when not fully configured
-    api_key = settings.LEMONSQUEEZY_API_KEY
-    if not api_key or settings.ENV != "production":
-        logger.info("SIMULATED: LS checkout for %s", plan_key)
-        await _activate_subscription_internal(user_id, plan_key)
-        return {
-            "checkout_url": f"{settings.APP_BASE_URL}/account/billing?dev_checkout=success&plan={plan_key}",
-        }
 
     variant_id = PRICE_ID_MAP.get(plan_key)
     if not variant_id:
@@ -68,6 +43,7 @@ async def create_checkout(user_id: str, user_email: str, plan_key: str) -> Dict[
         raise HTTPException(status_code=400, detail=f"Unknown plan: {plan_key}")
 
     try:
+        headers = _api_headers()
         async with httpx.AsyncClient(timeout=30.0) as client:
             res = await client.post(
                 f"{LEMONSQUEEZY_API}/checkouts",
