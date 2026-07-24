@@ -46,8 +46,6 @@ class MpesaStkOut(BaseModel):
 
 @router.post("/lemonsqueezy/checkout", response_model=LSCheckoutOut)
 async def ls_checkout(payload: LSCheckoutIn, user=Depends(get_current_user)):
-    if not settings.LEMONSQUEEZY_API_KEY:
-        raise HTTPException(status_code=501, detail="Lemon Squeezy is not configured")
     try:
         return await ls_create_checkout(
             user_id=user["id"],

@@ -26,7 +26,7 @@ LEMONSQUEEZY_API = "https://api.lemonsqueezy.com/v1"
 def _api_headers() -> dict:
     api_key = settings.LEMONSQUEEZY_API_KEY
     if not api_key:
-        raise HTTPException(status_code=501, detail="Lemon Squeezy is not configured")
+        raise HTTPException(status_code=503, detail="Lemon Squeezy is not configured. Contact support.")
     return {
         "Authorization": f"Bearer {api_key}",
         "Accept": "application/json",
@@ -34,13 +34,29 @@ def _api_headers() -> dict:
     }
 
 
+async def _activate_subscription_internal(user_id: str, plan_key: str):
+    """Activate subscription directly (for dev/simulated checkout)."""
+    plan = PlanTier.PRO
+    if plan_key.startswith("premium"):
+        plan = PlanTier.PREMIUM
+    await upsert_subscription(
+        user_id=user_id,
+        plan=plan,
+        status=PlanStatus.ACTIVE,
+        provider=PaymentProvider.LEMONSQUEEZY,
+        current_period_end=datetime.now(timezone.utc).replace(month=datetime.now(timezone.utc).month + 1),
+    )
+
+
 async def create_checkout(user_id: str, user_email: str, plan_key: str) -> Dict[str, Any]:
     variant_id = PRICE_ID_MAP.get(plan_key)
     if not variant_id:
         raise HTTPException(status_code=400, detail=f"Unknown plan: {plan_key}")
 
-    if settings.ENV == "dev":
-        logger.info("DEV MODE: Simulating LS checkout for %s", plan_key)
+    # Simulate checkout when not fully configured
+    if not settings.LEMONSQUEEZY_API_KEY or settings.ENV != "production":
+        logger.info("SIMULATED: LS checkout for %s (variant=%s)", plan_key, variant_id)
+        await _activate_subscription_internal(user_id, plan_key)
         return {
             "checkout_url": f"{settings.APP_BASE_URL}/account/billing?dev_checkout=success&plan={plan_key}",
         }
@@ -128,7 +144,7 @@ async def create_customer_portal(user_id: str) -> Dict[str, Any]:
 async def verify_webhook(payload: bytes, signature: str) -> Dict[str, Any]:
     secret = settings.LEMONSQUEEZY_WEBHOOK_SECRET
     if not secret:
-        raise HTTPException(status_code=501, detail="Lemon Squeezy webhook not configured")
+        raise HTTPException(status_code=503, detail="Lemon Squeezy webhook not configured. Contact support.")
 
     computed = hmac.new(secret.encode(), payload, hashlib.sha256).hexdigest()
     if not hmac.compare_digest(computed, signature):

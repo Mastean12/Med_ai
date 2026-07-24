@@ -33,7 +33,7 @@ async def _get_access_token() -> str:
     url = MPESA_AUTH_URL.get(settings.MPESA_ENVIRONMENT, MPESA_AUTH_URL["sandbox"])
 
     if not settings.MPESA_CONSUMER_KEY or not settings.MPESA_CONSUMER_SECRET:
-        raise HTTPException(status_code=501, detail="M-Pesa is not configured")
+        raise HTTPException(status_code=503, detail="M-Pesa service is not configured. Contact support.")
 
     auth = base64.b64encode(
         f"{settings.MPESA_CONSUMER_KEY}:{settings.MPESA_CONSUMER_SECRET}".encode()
