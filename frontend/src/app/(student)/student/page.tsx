@@ -131,7 +131,7 @@ export default function StudentDashboard() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.05 }}
-        className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-3">
+        className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {loading
           ? [1, 2, 3, 4].map((i) => <div key={i} className="h-[104px] animate-shimmer rounded-2xl bg-surface-100" />)
           : ([
@@ -157,7 +157,7 @@ export default function StudentDashboard() {
           transition={{ duration: 0.35, delay: 0.1 }}
           className="lg:col-span-2 space-y-4"
         >
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-3">
+          <div className="grid grid-cols-2 gap-3">
             {loading ? (
               <>
                 <div className="h-[104px] animate-shimmer rounded-2xl bg-surface-100" />
@@ -223,7 +223,7 @@ export default function StudentDashboard() {
                       <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${cfg.color.split(" ")[1]}`}>
                         <cfg.icon className={`h-4 w-4 ${cfg.color.split(" ")[0]}`} />
                       </div>
-                      <p className="flex-1 truncate text-sm text-surface-700">{item.label}</p>
+                      <p className="flex-1 text-sm text-surface-700 leading-snug line-clamp-2">{item.label}</p>
                       <span className="shrink-0 text-xs text-surface-400">{formatSince(item.created_at)}</span>
                     </div>
                   );
