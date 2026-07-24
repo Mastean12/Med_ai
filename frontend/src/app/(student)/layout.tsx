@@ -9,7 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 function MainContent({ children }: { children: React.ReactNode }) {
   const { collapsed } = useSidebar();
   return (
-    <div className={`flex flex-col flex-1 min-h-screen transition-all duration-200 pt-14 lg:pt-0 lg:pl-0 ${collapsed ? "lg:ml-[68px]" : "lg:ml-64"}`}>
+    <div className={`flex flex-col flex-1 min-h-screen w-full max-w-full transition-all duration-200 pt-14 lg:pt-0 lg:pl-0 ${collapsed ? "lg:ml-[68px]" : "lg:ml-64"}`}>
       <main className="flex-1">{children}</main>
       <footer className="border-t border-surface-200 bg-white">
         <div className="px-6 py-4 text-center">
@@ -48,7 +48,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
 
   return (
     <SidebarProvider>
-      <div className="flex">
+      <div className="flex w-full overflow-x-hidden">
         <Sidebar />
         <MainContent>{children}</MainContent>
       </div>
