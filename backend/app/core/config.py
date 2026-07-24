@@ -35,9 +35,9 @@ class Settings(BaseSettings):
     MPESA_CALLBACK_URL: str = ""
     MPESA_ENVIRONMENT: str = "sandbox"
 
-    APP_BASE_URL: str = "http://localhost:3000"
-    BACKEND_BASE_URL: str = "http://localhost:8000"
-    CORS_ORIGINS: str = "https://medaitutor.com,https://www.medaitutor.com,http://localhost:3000,http://127.0.0.1:3000"
+    APP_BASE_URL: str = "https://medaitutor.com"
+    BACKEND_BASE_URL: str = "https://med-ai-683c.onrender.com"
+    CORS_ORIGINS: str = "https://medaitutor.com,https://www.medaitutor.com,http://localhost:3000,http://127.0.0.1:3000,https://*.vercel.app"
 
     model_config = SettingsConfigDict(env_file=".env")
 

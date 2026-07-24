@@ -40,11 +40,11 @@ services:
       - key: LEMONSQUEEZY_VARIANT_PREMIUM_YEARLY
         sync: false
       - key: APP_BASE_URL
-        value: https://med-ai-indol.vercel.app
+        value: https://medaitutor.com
       - key: BACKEND_BASE_URL
         sync: false
       - key: FREE_DAILY_AI_LIMIT
         value: 10
       - key: CORS_ORIGINS
-        value: https://med-ai-indol.vercel.app,http://localhost:3000,https://*.vercel.app
+        value: https://medaitutor.com,https://www.medaitutor.com,http://localhost:3000,https://*.vercel.app
 healthCheckPath: /health
