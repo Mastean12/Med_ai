@@ -12,7 +12,6 @@ export default function PublicHome() {
         <PortalCard title="Symptom Checker" description="General health guidance based on your symptoms. Not a diagnosis." href="/public/symptom-checker" icon="🏥" />
         <PortalCard title="Health Tips" description="Evidence-based wellness tips for everyday healthy living." href="/public/tips" icon="💡" />
         <PortalCard title="Safety Notices" description="Emergency numbers, warning signs, and when to seek immediate care." href="/public/safety" icon="🛡️" />
-        <PortalCard title="Test AI" description="Verify the AI connection is working properly." href="/public/test-llm" icon="🔧" />
       </div>
     </main>
   );
