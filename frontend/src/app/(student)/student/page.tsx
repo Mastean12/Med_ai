@@ -131,7 +131,7 @@ export default function StudentDashboard() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.05 }}
-        className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {loading
           ? [1, 2, 3, 4].map((i) => <div key={i} className="h-[104px] animate-shimmer rounded-2xl bg-surface-100" />)
           : ([
@@ -157,7 +157,7 @@ export default function StudentDashboard() {
           transition={{ duration: 0.35, delay: 0.1 }}
           className="lg:col-span-2 space-y-4"
         >
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-2 gap-3">
             {quickActions.map((action, i) => (
               <motion.div
                 key={action.href}
